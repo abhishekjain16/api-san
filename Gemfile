@@ -88,6 +88,8 @@ gem 'marginalia', github: 'basecamp/marginalia'
 # timeout Rails request, needed if running on heroku- https://devcenter.heroku.com/articles/request-timeout
 gem "rack-timeout"
 
+gem 'react-rails', '~> 1.8.2'
+
 group :development do
 
   # speeds up development by keeping your application running in the background
