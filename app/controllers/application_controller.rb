@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   def set_honeybadger_context
     hash = { uuid: request.uuid }
     hash.merge!(user_id: current_user.id, user_email: current_user.email) if current_user
-    Honeybadger.context hash
+    #Honeybadger.context hash
   end
 
   def set_layout_carrier
