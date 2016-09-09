@@ -5,7 +5,18 @@ end
 
 desc 'Sets up the project by running migration and populating sample data'
 task setup: [:environment, :not_production, 'db:drop', 'db:create', 'db:migrate'] do
-  ["setup_sample_data"].each { |cmd| system "rake #{cmd}" }
+  ["db:purge_all_data_and_add_sample_data"].each { |cmd| system "rake #{cmd}" }
+end
+
+namespace :db do
+  desc 'Deletes all records and populates sample data'
+  task purge_all_data_and_add_sample_data: [:environment, :not_production] do
+    delete_all_records_from_all_tables
+
+    create_user email: 'sam@example.com'
+
+    puts 'sample data was added successfully'
+  end
 end
 
 def delete_all_records_from_all_tables
@@ -17,15 +28,6 @@ def delete_all_records_from_all_tables
     klass.reset_column_information
     klass.delete_all
   end
-end
-
-desc 'Deletes all records and populates sample data'
-task setup_sample_data: [:environment, :not_production] do
-  delete_all_records_from_all_tables
-
-  create_user email: 'sam@example.com'
-
-  puts 'sample data was added successfully'
 end
 
 def create_user( options = {} )
