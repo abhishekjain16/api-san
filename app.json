@@ -1,0 +1,16 @@
+{
+  "name": "apiradar",
+  "scripts": {
+    "postdeploy": "bundle exec rake db:migrate && bundle exec rake db:setup_sample_data"
+  },
+  "env": {
+  },
+  "formation": {
+  },
+  "addons": [
+
+  ],
+  "buildpacks": [
+
+  ]
+}
