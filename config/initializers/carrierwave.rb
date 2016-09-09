@@ -39,7 +39,7 @@ if Rails.env == 'test'
 else
   case Rails.application.secrets.store_uploaded_assets_in
     when 'aws_s3'
-      setup_for_storing_assets_in_s3
+      # setup_for_storing_assets_in_s3
     when 'filesystem'
       setup_for_storing_assets_in_file_system
     else
