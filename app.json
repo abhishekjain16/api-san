@@ -1,7 +1,7 @@
 {
   "name": "apiradar",
   "scripts": {
-    "postdeploy": "bundle exec rake db:migrate && bundle exec rake db:setup_sample_data"
+    "postdeploy": "bundle exec rake db:migrate && bundle exec rake db:purge_all_data_and_add_sample_data"
   },
   "env": {
     "HEROKU_APP_NAME": {
