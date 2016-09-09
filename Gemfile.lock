@@ -147,6 +147,8 @@ GEM
       responders
       warden (~> 1.2.3)
     docile (1.1.5)
+    domain_name (0.5.20160826)
+      unf (>= 0.0.5, < 1.0.0)
     email_prefixer (1.2.0)
       rails (>= 4.0)
     email_validator (1.6.0)
@@ -310,6 +312,8 @@ GEM
       haml (~> 4.0.0)
       nokogiri (~> 1.6.0)
       ruby_parser (~> 3.5)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.7.0)
     inflecto (0.0.2)
     ipaddress (0.8.3)
@@ -350,6 +354,7 @@ GEM
     multi_json (1.12.1)
     mustermann (0.4.0)
       tool (~> 0.2)
+    netrc (0.11.0)
     nio4r (1.2.1)
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
@@ -417,6 +422,10 @@ GEM
       railties (>= 4.2.0, < 5.1)
     rollbar (2.12.0)
       multi_json
+    rest-client (2.0.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     ruby-progressbar (1.8.1)
     ruby_parser (3.8.2)
       sexp_processor (~> 4.1)
@@ -456,6 +465,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.0.1)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.2)
     uniform_notifier (1.10.0)
     warden (1.2.6)
       rack (>= 1.0)
@@ -502,6 +514,7 @@ DEPENDENCIES
   rails_12factor
   react-rails (~> 1.8.2)
   rollbar
+  rest-client
   sass-rails (>= 5.0.3)
   simple_form
   simplecov
