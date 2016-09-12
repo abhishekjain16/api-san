@@ -92,6 +92,8 @@ gem 'react-rails', '~> 1.8.2'
 
 gem 'rest-client'
 
+gem 'mocha'
+
 group :development do
 
   # speeds up development by keeping your application running in the background

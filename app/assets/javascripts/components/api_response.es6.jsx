@@ -1,4 +1,16 @@
 class ApiResponse extends React.Component {
+
+  parseResponse(response) {
+    const contentType = response.response_headers.content_type;
+    if (contentType.match(/json/g)) {
+      return <DOMify value={JSON.parse(response.response_body)}/>;
+    }
+    else {
+      return <p>Response not in JSON </p>
+    }
+    response.response_body
+  }
+
   render () {
     const response = this.props.response;
     const url = this.props.url;
@@ -27,7 +39,7 @@ class ApiResponse extends React.Component {
         </div>
         <div>
           <h5>Body:</h5>
-            <DOMify value={response.response_body} />
+            {this.parseResponse(response)}
         </div>
       </div>
     );
