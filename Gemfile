@@ -92,6 +92,8 @@ gem 'react-rails', '~> 1.8.2'
 
 gem 'rest-client'
 
+gem 'pry'
+
 gem 'mocha'
 
 group :development do

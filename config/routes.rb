@@ -6,6 +6,8 @@ Apiradar::Application.routes.draw do
     end
   end
 
+  resources :api_responses, only: [:show, :create]
+
   # devise_for :users, controllers: { registrations: 'registrations' }
 
   # # Authentication

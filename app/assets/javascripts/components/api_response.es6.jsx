@@ -8,7 +8,6 @@ class ApiResponse extends React.Component {
     else {
       return <p>Response not in JSON </p>
     }
-    response.response_body
   }
 
   render () {

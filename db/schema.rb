@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140225143027) do
+ActiveRecord::Schema.define(version: 20160912095704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -27,6 +28,19 @@ ActiveRecord::Schema.define(version: 20140225143027) do
     t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author_type_and_author_id", using: :btree
     t.index ["namespace"], name: "index_active_admin_comments_on_namespace", using: :btree
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
+  end
+
+  create_table "api_responses", force: :cascade do |t|
+    t.string   "url"
+    t.string   "method"
+    t.hstore   "response",         default: {}
+    t.hstore   "response_headers", default: {}
+    t.hstore   "request_params",   default: {}
+    t.string   "status_code"
+    t.string   "token"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+    t.index ["token"], name: "index_api_responses_on_token", unique: true, using: :btree
   end
 
   create_table "delayed_jobs", force: :cascade do |t|
