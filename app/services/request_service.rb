@@ -10,7 +10,11 @@ class RequestService
   end
 
   def process
-    @response = RestClient::Request.execute(options)
+    begin
+      @response = RestClient::Request.execute(options)
+    rescue RestClient::ExceptionWithResponse => e
+      @response = e.response
+    end
     save_api_response
   end
 
@@ -40,6 +44,6 @@ class RequestService
   end
 
   def options
-    {url: url, method: method}.merge(authorization_options)
+    {url: url, method: method, :verify_ssl => false}.merge(authorization_options)
   end
 end

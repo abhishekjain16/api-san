@@ -2,7 +2,7 @@ class ApiResponse extends React.Component {
 
   parseResponse(response) {
     const contentType = response.response_headers.content_type;
-    if (contentType.match(/json/g)) {
+    if (contentType && contentType.match(/json/g)) {
       return <DOMify value={JSON.parse(response.response_body)}/>;
     }
     else {
