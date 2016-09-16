@@ -6,6 +6,11 @@
   "env": {
     "HEROKU_APP_NAME": {
       "required":true
+    },
+    "RACK_ENV": "staging",
+    "RAILS_ENV": "staging",
+    "SECRET_KEY_BASE":{
+      "generator":"secret"
     }
   },
   "formation": {
