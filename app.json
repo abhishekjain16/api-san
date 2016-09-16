@@ -4,21 +4,23 @@
     "postdeploy": "bundle exec rake db:migrate && bundle exec rake db:purge_all_data_and_add_sample_data"
   },
   "env": {
-    "HEROKU_APP_NAME": {
+    "SECRET_KEY_BASE":{
       "required":true
     },
-    "RACK_ENV": "staging",
-    "RAILS_ENV": "staging",
-    "SECRET_KEY_BASE":{
-      "generator":"secret"
+   "RACK_ENV": {
+      "value": "staging"
+    },
+    "RAILS_ENV": {
+      "value": "staging"
+    },
+    "HEROKU_APP_NAME": {
+      "required": true
+    },
+    "LOG_LEVEL": {
+      "value": "DEBUG"
     }
   },
-  "formation": {
-  },
-  "addons": [
-
-  ],
-  "buildpacks": [
-
-  ]
+  "formation": { },
+  "addons": [ "heroku-postgresql" ],
+  "buildpacks": [ ]
 }
