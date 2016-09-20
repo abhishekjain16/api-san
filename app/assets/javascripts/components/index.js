@@ -10,15 +10,15 @@ class ApiRadar {
     this.registerComponent('ApiResponse', ApiResponse);
   }
 
-  registerComponent(name, component){
+  registerComponent(name, component) {
     this.components[name] = component;
   }
 
   loadReactComponents() {
     $("[data-integration-name='react-component']").each((i, element) => {
-      const _element = $(element),
-        componentName = _element.data('react-class'),
-        payload = _element.data('react-props');
+      const _element = $(element);
+      const componentName = _element.data('react-class');
+      const payload = _element.data('react-props');
       ReactDOM.render(
         React.createElement(this.components[componentName], payload),
         element

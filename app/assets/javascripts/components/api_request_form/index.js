@@ -48,4 +48,4 @@ ApiRequestForm.defaultProps = {
   formURL: '/api_responses'
 }
 
-module.exports = ApiRequestForm;
+export default ApiRequestForm;

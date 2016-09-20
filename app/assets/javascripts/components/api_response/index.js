@@ -21,15 +21,13 @@ const ApiResponse = ({response, url, httpMethod}) => {
   );
 };
 
-module.exports = ApiResponse;
-
 ApiResponse.propTypes = {
   response: React.PropTypes.object.isRequired
 };
 
 const Styles = {
-  parsedJson: {backgroundColor: 'initial'},
-  parsedResponseContainer: {paddingLeft: '40px'}
+  parsedJson: { backgroundColor: 'initial' },
+  parsedResponseContainer: { paddingLeft: '40px' }
 };
 
 const HTTPMethod = ({value, url}) => {
@@ -89,3 +87,5 @@ const ParsedJSONResponse = ({body}) => {
     </pre>
   )
 };
+
+export default ApiResponse;
