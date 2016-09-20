@@ -1,3 +1,4 @@
+import React from 'react';
 class ApiRequestForm extends React.Component {
   render () {
     return (
@@ -46,3 +47,5 @@ class ApiRequestForm extends React.Component {
 ApiRequestForm.defaultProps = {
   formURL: '/api_responses'
 }
+
+module.exports = ApiRequestForm;

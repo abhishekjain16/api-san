@@ -24,3 +24,4 @@ public/uploads
 coverage
 .*swp
 /uploads/*
+/node_modules/*

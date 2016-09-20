@@ -10,6 +10,8 @@ gem 'sprockets-rails'
 gem 'sass-rails', '>= 5.0.3'
 gem 'uglifier', '>= 2.7.1'
 
+gem 'sprockets-commoner'
+
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 
@@ -87,8 +89,6 @@ gem 'marginalia', github: 'basecamp/marginalia'
 
 # timeout Rails request, needed if running on heroku- https://devcenter.heroku.com/articles/request-timeout
 gem "rack-timeout"
-
-gem 'react-rails', '~> 1.8.2'
 
 gem 'rest-client'
 

@@ -4,7 +4,7 @@ class ApiResponsesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def show
-    render component: 'ApiResponse', props: api_response
+    render
   end
 
   def create
@@ -25,10 +25,12 @@ class ApiResponsesController < ApplicationController
       url: @api_response.url,
       httpMethod: @api_response.method,
       response: {
-        response_headers: @api_response.response_headers, 
+        response_headers: @api_response.response_headers,
         response_body: @api_response.response['body'],
         response_code: @api_response.status_code
       }
     }
   end
+
+  helper_method :api_response
 end
