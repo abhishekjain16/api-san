@@ -1,11 +1,11 @@
 import ReactDOM from 'react-dom';
 import React from 'react';
-import ApiRequestForm from 'components/api_request_form'
-import ApiResponse from 'components/api_response'
+import ApiRequestForm from 'components/api_request_form';
+import ApiResponse from 'components/api_response';
 
 class ApiRadar {
-  constructor(){
-    this.components = {}
+  constructor() {
+    this.components = {};
     this.registerComponent('ApiRequestForm', ApiRequestForm);
     this.registerComponent('ApiResponse', ApiResponse);
   }
@@ -13,21 +13,24 @@ class ApiRadar {
   registerComponent(name, component) {
     this.components[name] = component;
   }
-
+/*eslint-disable */
   loadReactComponents() {
     $("[data-integration-name='react-component']").each((i, element) => {
-      const _element = $(element);
-      const componentName = _element.data('react-class');
-      const payload = _element.data('react-props');
+      const jqueryElement = $(element);
+      const componentName = jqueryElement.data('react-class');
+      const payload = jqueryElement.data('react-props');
       ReactDOM.render(
         React.createElement(this.components[componentName], payload),
         element
       );
     });
-
+/*eslint-enable */
   }
 }
+
+/*eslint-disable */
 $(() => {
-  const api_radar = new ApiRadar;
-  api_radar.loadReactComponents();
+  const apiRadar = new ApiRadar();
+  apiRadar.loadReactComponents();
 });
+/*eslint-enable */
