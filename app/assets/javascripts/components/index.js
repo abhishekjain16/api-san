@@ -13,7 +13,7 @@ class ApiRadar {
   registerComponent(name, component) {
     this.components[name] = component;
   }
-
+/*eslint-disable */
   loadReactComponents() {
     $("[data-integration-name='react-component']").each((i, element) => {
       const jqueryElement = $(element);
@@ -24,10 +24,13 @@ class ApiRadar {
         element
       );
     });
-
+/*eslint-enable */
   }
 }
+
+/*eslint-disable */
 $(() => {
   const apiRadar = new ApiRadar();
   apiRadar.loadReactComponents();
 });
+/*eslint-enable */
