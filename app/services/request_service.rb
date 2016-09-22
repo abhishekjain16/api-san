@@ -1,12 +1,12 @@
 class RequestService
-  attr_reader :url, :username, :password, :method, :response, :params
+  attr_reader :url, :username, :password, :method, :response, :request_params
 
-  def initialize(url, options={})
+  def initialize(url, method, options={})
     @url = url
+    @method = method || :get
     @username = options[:username]
     @password = options[:password]
-    @params = options[:params]
-    @method = options[:method] || :get
+    @request_params = options[:request_params]
   end
 
   def process
@@ -26,7 +26,7 @@ class RequestService
                         response: response_body,
                         response_headers: response.headers,
                         status_code: response.code,
-                        request_params: params )
+                        request_params: request_params.is_a?(String) ? JSON.parse(request_params) : request_params )
   end
 
   def authorization_options
@@ -44,6 +44,6 @@ class RequestService
   end
 
   def options
-    {url: url, method: method, :verify_ssl => false}.merge(authorization_options)
+    {url: url, method: method, :verify_ssl => false, headers: {content_type: :json}}.merge(authorization_options).merge(payload: request_params)
   end
 end

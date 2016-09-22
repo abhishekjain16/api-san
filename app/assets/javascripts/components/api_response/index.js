@@ -1,16 +1,19 @@
 import React from 'react';
 import _ from 'underscore';
 
-const ApiResponse = ({ response, url, httpMethod }) => {
+const ApiResponse = ({ response, url, httpMethod, requestParams }) => {
   return (
     <div>
-      <h2 className="text-center">Response</h2>
       <div className="row">
         <HTTPMethod value={httpMethod} url={url} />
       </div>
       <div className="row">
         <HTTPStatus value={response.response_code} />
       </div>
+      <div className="row">
+        <RequestParams params={requestParams} />
+      </div>
+      <h4 className="text-center"> Response</h4>
       <div className="row">
         <Headers headers={response.response_headers} />
       </div>
@@ -22,7 +25,9 @@ const ApiResponse = ({ response, url, httpMethod }) => {
 };
 
 ApiResponse.propTypes = {
-  response: React.PropTypes.object.isRequired,
+  response: React.PropTypes.isRequired,
+  url: React.PropTypes.isRequired,
+  httpMethod: React.PropTypes.isRequired,
 };
 
 const Styles = {
@@ -31,7 +36,7 @@ const Styles = {
 };
 
 const HTTPMethod = ({ value, url }) => {
-  return <h4>{value} {url}</h4>;
+  return <h3>{value} {url}</h3>;
 };
 
 const HTTPStatus = ({ value }) => {
@@ -86,6 +91,31 @@ const ParsedJSONResponse = ({ body }) => {
     <pre style={Styles.parsedJson}>
       {formattedJson}
     </pre>
+  );
+};
+
+const RequestParams = ({ params }) => {
+  if (_.isEmpty(params)) {
+    return <div />;
+  } else {
+    return (
+      <div>
+        <h4>Request Params:</h4>
+        <ul>
+          {_.map(params, (value, key) => {
+            return <RequestParam key={key} paramKey={key} paramValue={value} />;
+          })}
+        </ul>
+      </div>
+    );
+  }
+};
+
+const RequestParam = ({ paramKey, paramValue }) => {
+  return (
+    <li className="list-group-item">
+      {paramKey}: {paramValue}
+    </li>
   );
 };
 

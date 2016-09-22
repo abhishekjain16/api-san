@@ -8,7 +8,7 @@ class ApiResponsesController < ApplicationController
   end
 
   def create
-    api_response = RequestService.new(params[:url], params[:auth]).process
+    api_response = RequestService.new(params[:url], params[:method], options).process
     redirect_to api_response_path(id: api_response.token)
   end
 
@@ -24,6 +24,7 @@ class ApiResponsesController < ApplicationController
     {
       url: @api_response.url,
       httpMethod: @api_response.method,
+      requestParams: @api_response.request_params,
       response: {
         response_headers: @api_response.response_headers,
         response_body: @api_response.response['body'],
@@ -33,4 +34,12 @@ class ApiResponsesController < ApplicationController
   end
 
   helper_method :api_response
+
+  def request_parameters
+    ApiRequestParameterParserService.new(params).process
+  end
+
+  def options
+    params.merge(request_params: request_parameters).permit!.to_h
+  end
 end
