@@ -7,7 +7,7 @@
     "SECRET_KEY_BASE":{
       "required":true
     },
-   "RACK_ENV": {
+    "RACK_ENV": {
       "value": "staging"
     },
     "RAILS_ENV": {
@@ -22,5 +22,12 @@
   },
   "formation": { },
   "addons": [ "heroku-postgresql" ],
-  "buildpacks": [ ]
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    },
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-ruby.git"
+    }
+  ]
 }
