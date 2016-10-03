@@ -206,6 +206,7 @@ const SelectForMethods = () => {
       <option value="post">POST</option>
       <option value="put">PUT</option>
       <option value="patch">PATCH</option>
+      <option value="delete">Delete</option>
     </select>
   );
 };
