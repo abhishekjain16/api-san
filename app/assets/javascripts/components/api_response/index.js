@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'underscore';
 
-const ApiResponse = ({ response, url, httpMethod, requestParams }) => {
+const ApiResponse = ({ response, url, httpMethod, requestParams, requestHeaders }) => {
   return (
     <div>
       <div className="row">
@@ -10,10 +10,14 @@ const ApiResponse = ({ response, url, httpMethod, requestParams }) => {
       <div className="row">
         <HTTPStatus value={response.response_code} />
       </div>
+      <h3 className="text-center"> Request</h3>
       <div className="row">
-        <RequestParams params={requestParams} />
+        <List list={requestHeaders} heading="Headers" />
       </div>
-      <h4 className="text-center"> Response</h4>
+      <div className="row">
+        <List list={requestParams} heading="Parameters" />
+      </div>
+      <h3 className="text-center"> Response</h3>
       <div className="row">
         <Headers headers={response.response_headers} />
       </div>
@@ -22,12 +26,6 @@ const ApiResponse = ({ response, url, httpMethod, requestParams }) => {
       </div>
     </div>
   );
-};
-
-ApiResponse.propTypes = {
-  response: React.PropTypes.isRequired,
-  url: React.PropTypes.isRequired,
-  httpMethod: React.PropTypes.isRequired,
 };
 
 const Styles = {
@@ -49,18 +47,10 @@ const Headers = ({ headers }) => {
       <h5>Headers:</h5>
       <ul>
         {_.map(headers, (value, key) => {
-          return <Header key={key} headerKey={key} headerValue={value} />;
+          return <ListItemPair key={key} listKey={key} listValue={value} />;
         })}
       </ul>
     </div>
-  );
-};
-
-const Header = ({ headerKey, headerValue }) => {
-  return (
-    <li className="list-group-item">
-      {headerKey}: {headerValue}
-    </li>
   );
 };
 
@@ -94,16 +84,16 @@ const ParsedJSONResponse = ({ body }) => {
   );
 };
 
-const RequestParams = ({ params }) => {
-  if (_.isEmpty(params)) {
+const List = ({ list, heading }) => {
+  if (_.isEmpty(list)) {
     return <div />;
   } else {
     return (
       <div>
-        <h4>Request Params:</h4>
+        <h5>{heading}:</h5>
         <ul>
-          {_.map(params, (value, key) => {
-            return <RequestParam key={key} paramKey={key} paramValue={value} />;
+          {_.map(list, (value, key) => {
+            return <ListItemPair key={key} listKey={key} listValue={value} />;
           })}
         </ul>
       </div>
@@ -111,10 +101,10 @@ const RequestParams = ({ params }) => {
   }
 };
 
-const RequestParam = ({ paramKey, paramValue }) => {
+const ListItemPair = ({ listKey, listValue }) => {
   return (
     <li className="list-group-item">
-      {paramKey}: {paramValue}
+      {listKey}: {listValue}
     </li>
   );
 };

@@ -8,12 +8,13 @@ class ApiRequestForm extends React.Component {
     this.state = {
       params: [],
       showRequestBody: false,
+      headers: [],
     };
   }
 
   addParam(event) {
     event.preventDefault();
-    const params = this.state.params.concat({ component: RequestParameterInput, id: uuid.v1() });
+    const params = this.state.params.concat({ id: uuid.v1() });
     const showRequestBody = false;
     this.setState({ params, showRequestBody });
   }
@@ -25,24 +26,43 @@ class ApiRequestForm extends React.Component {
     this.setState({ params, showRequestBody });
   }
 
-  removeParam(event, index) {
+  addHeader(event) {
     event.preventDefault();
-    const params = this.state.params.filter((element, i) => {
-      return index !== i;
+    const headers = this.state.headers.concat({ id: uuid.v1() });
+    this.setState({ headers });
+  }
+
+  removeParam(event, paramId) {
+    event.preventDefault();
+    const params = this.state.params.filter((element) => {
+      return element.id !== paramId;
     });
     this.setState({ params });
   }
 
+  removeHeader(event, headerId) {
+    event.preventDefault();
+    const headers = this.state.headers.filter((element) => {
+      return element.id !== headerId;
+    });
+    this.setState({ headers });
+  }
+
   render() {
-    const params = this.state.params.map((param, index) => {
-      const removeParam = event => this.removeParam(event, index);
-      return <param.component key={param.id} removeParam={removeParam} />;
+    const params = this.state.params.map((param) => {
+      const removeParam = event => this.removeParam(event, param.id);
+      return <RequestParameterInput key={param.id} removeParam={removeParam} />;
+    });
+    const headers = this.state.headers.map((header) => {
+      const removeHeader = event => this.removeHeader(event, header.id);
+      return <RequestHeaderInput key={header.id} removeHeader={removeHeader} />;
     });
     return (
       <div className="row">
         <div className="col-sm-6 col-sm-offset-3">
           <div className="row form-controls text-center">
             <form method="POST" action={this.props.formURL} className="bootstrap-center-form">
+
               <div className="form-group">
                 <div className="row text-center">
                   <Label title="Destination URL" />
@@ -56,6 +76,7 @@ class ApiRequestForm extends React.Component {
                   </div>
                 </div>
               </div>
+
               <div className="form-group">
                 <div className="row">
                   <Label title="Authentication Basic" />
@@ -69,6 +90,21 @@ class ApiRequestForm extends React.Component {
                   </div>
                 </div>
               </div>
+
+              <div className="form-group">
+                <div className="row">
+                  <Label title="Headers" />
+                </div>
+                <div className="row form-controls">
+                  <div className="row">
+                    <AddHeaderLink addHeader={event => this.addHeader(event)} />
+                  </div>
+                  <div className="row form-controls">
+                    {headers}
+                  </div>
+                </div>
+              </div>
+
               <div className="form-group">
                 <div className="row">
                   <Label title="Parameters" />
@@ -85,9 +121,11 @@ class ApiRequestForm extends React.Component {
                   </div>
                 </div>
               </div>
+
               <div className="form-buttons text-center row">
                 <button type="submit" className="btn btn-primary btn-block">Launch Request</button>
               </div>
+
             </form>
           </div>
         </div>
@@ -99,6 +137,10 @@ class ApiRequestForm extends React.Component {
 
 const AddParamLink = ({ addParam }) => {
   return <a href="" onClick={event => addParam(event)} className="devise-links"> (+) Add Parameter(s) </a>;
+};
+
+const AddHeaderLink = ({ addHeader }) => {
+  return <a href="" onClick={event => addHeader(event)} className="devise-links"> (+) Add Header(s) </a>;
 };
 
 const AddRequestBody = ({ addBody }) => {
@@ -116,17 +158,43 @@ const RequestBody = ({ showRequestBody }) => {
 const RequestParameterInput = ({ removeParam }) => {
   return (
     <div className="row form-controls form-input-text">
-      <div className="col-sm-5">
-        <input type="text" name={'request_parameters[][key]'} className="form-control" placeholder="Enter Name" />
-      </div>
-      <div className="col-sm-5">
-        <input type="text" name={'request_parameters[][value]'} className="form-control" placeholder="Enter Value" />
-      </div>
+      <KeyInput inputKeyName="request_parameters[][key]" />
+      <ValueInput inputValueName="request_parameters[][value]" />
       <div className="col-sm-2">
         <a href="" className="fa fa-2x fa-times" onClick={removeParam}>
           <span />
         </a>
       </div>
+    </div>
+  );
+};
+
+const RequestHeaderInput = ({ removeHeader }) => {
+  return (
+    <div className="row form-controls form-input-text">
+      <KeyInput inputKeyName="request_headers[][key]" />
+      <ValueInput inputValueName="request_headers[][value]" />
+      <div className="col-sm-2">
+        <a href="" className="fa fa-2x fa-times" onClick={removeHeader}>
+          <span />
+        </a>
+      </div>
+    </div>
+  );
+};
+
+const KeyInput = ({ inputKeyName }) => {
+  return (
+    <div className="col-sm-5">
+      <input type="text" name={inputKeyName} className="form-control" placeholder="Enter Name" />
+    </div>
+  );
+};
+
+const ValueInput = ({ inputValueName }) => {
+  return (
+    <div className="col-sm-5">
+      <input type="text" name={inputValueName} className="form-control" placeholder="Enter Value" />
     </div>
   );
 };
@@ -137,6 +205,7 @@ const SelectForMethods = () => {
       <option value="get">GET</option>
       <option value="post">POST</option>
       <option value="put">PUT</option>
+      <option value="patch">PATCH</option>
     </select>
   );
 };

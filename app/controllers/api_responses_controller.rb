@@ -25,6 +25,7 @@ class ApiResponsesController < ApplicationController
       url: @api_response.url,
       httpMethod: @api_response.method,
       requestParams: @api_response.request_params,
+      requestHeaders: @api_response.request_headers,
       response: {
         response_headers: @api_response.response_headers,
         response_body: @api_response.response['body'],
@@ -35,11 +36,10 @@ class ApiResponsesController < ApplicationController
 
   helper_method :api_response
 
-  def request_parameters
-    ApiRequestParameterParserService.new(params).process
-  end
-
   def options
-    params.merge(request_params: request_parameters).permit!.to_h
+    api_request_parser_service = ApiRequestParserService.new(params)
+    request_headers = api_request_parser_service.process_headers
+    request_parameters = api_request_parser_service.process_parameters
+    params.merge(request_params: request_parameters).merge(request_headers: request_headers).permit!.to_h
   end
 end

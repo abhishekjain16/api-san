@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160912095704) do
+ActiveRecord::Schema.define(version: 20160929131240) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20160912095704) do
     t.string   "token"
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
+    t.hstore   "request_headers",  default: {}
     t.index ["token"], name: "index_api_responses_on_token", unique: true, using: :btree
   end
 
