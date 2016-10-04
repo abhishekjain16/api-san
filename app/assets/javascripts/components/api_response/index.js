@@ -4,13 +4,13 @@ import _ from 'underscore';
 const ApiResponse = ({ response, url, httpMethod, requestParams, requestHeaders }) => {
   return (
     <div>
+      <h3 className="text-center"> Request</h3>
       <div className="row">
         <HTTPMethod value={httpMethod} url={url} />
       </div>
       <div className="row">
         <HTTPStatus value={response.response_code} />
       </div>
-      <h3 className="text-center"> Request</h3>
       <div className="row">
         <List list={requestHeaders} heading="Headers" />
       </div>

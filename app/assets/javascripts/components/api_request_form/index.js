@@ -8,6 +8,7 @@ class ApiRequestForm extends React.Component {
     this.state = {
       params: [],
       showRequestBody: false,
+      showAuthentication: false,
       headers: [],
     };
   }
@@ -48,6 +49,10 @@ class ApiRequestForm extends React.Component {
     this.setState({ headers });
   }
 
+  handleChange(event) {
+    this.setState({ showAuthentication: event.target.checked });
+  }
+
   render() {
     const params = this.state.params.map((param) => {
       const removeParam = event => this.removeParam(event, param.id);
@@ -64,9 +69,6 @@ class ApiRequestForm extends React.Component {
             <form method="POST" action={this.props.formURL} className="bootstrap-center-form">
 
               <div className="form-group">
-                <div className="row text-center">
-                  <Label title="Destination URL" />
-                </div>
                 <div className="row">
                   <div className="col-sm-3">
                     <SelectForMethods />
@@ -78,23 +80,13 @@ class ApiRequestForm extends React.Component {
               </div>
 
               <div className="form-group">
-                <div className="row">
-                  <Label title="Authentication Basic" />
+                <div className="checkbox">
+                  <label htmlFor="authentication"><input type="checkbox" onChange={event => this.handleChange(event)} />Basic Authentication</label>
                 </div>
-                <div className="row">
-                  <div className="col-sm-6">
-                    <input type="text" className="form-control" name="username" placeholder="Enter username" />
-                  </div>
-                  <div className="col-sm-6">
-                    <input type="text" className="form-control" name="password" placeholder="Enter password" />
-                  </div>
-                </div>
+                <Authentication showAuthentication={this.state.showAuthentication} />
               </div>
 
               <div className="form-group">
-                <div className="row">
-                  <Label title="Headers" />
-                </div>
                 <div className="row form-controls">
                   <div className="row">
                     <AddHeaderLink addHeader={event => this.addHeader(event)} />
@@ -106,9 +98,6 @@ class ApiRequestForm extends React.Component {
               </div>
 
               <div className="form-group">
-                <div className="row">
-                  <Label title="Parameters" />
-                </div>
                 <div className="row form-controls">
                   <div className="row">
                     <AddParamLink addParam={event => this.addParam(event)} />
@@ -211,12 +200,21 @@ const SelectForMethods = () => {
   );
 };
 
-const Label = ({ title }) => {
-  return (
-    <label htmlFor={title}>
-      {title}
-    </label>
-  );
+const Authentication = ({ showAuthentication }) => {
+  if (showAuthentication) {
+    return (
+      <div className="row">
+        <div className="col-sm-6">
+          <input type="text" className="form-control" name="username" placeholder="Enter username" />
+        </div>
+        <div className="col-sm-6">
+          <input type="text" className="form-control" name="password" placeholder="Enter password" />
+        </div>
+      </div>
+    );
+  } else {
+    return <div />;
+  }
 };
 
 ApiRequestForm.defaultProps = {
