@@ -28,7 +28,7 @@ class ApiRequestParserService
 
   def parse(request_array)
     parsed_hash = {}
-    request_array.each do |request|
+    request_array.values.each do |request|
       parsed_hash[request[:key]] = request[:value] if request[:key] && request[:value]
     end
     parsed_hash

@@ -1,8 +1,8 @@
 import React from 'react';
 import uuid from 'uuid';
-import update from 'react-addons-update'
+import update from 'react-addons-update';
 import _ from 'underscore';
-
+import { browserHistory } from 'react-router';
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
@@ -10,7 +10,7 @@ class ApiRequestForm extends React.Component {
 
     this.state = {
       url: '',
-      method: '',
+      method: 'get',
       username: '',
       password: '',
       request_body: '',
@@ -85,15 +85,16 @@ class ApiRequestForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    const requestData = this.requestData();
-    debugger
-    // $.ajax({
-    //   url: this.props.formURL, context: this, dataType: 'json', type: 'POST', data: requestData
-    // }).done(function (data) {
-    //   this.setState({response: data});
-    // }).fail(function (data) {
-    //   //Need to add this
-    // });
+    const data = _.extend(this.requestParams(), this.requestData());
+    $.ajax({
+      url: this.props.formURL, context: this, dataType: 'json', type: 'POST', data: data
+    }).done(function (data) {
+      const token = data.token;
+      browserHistory.push(`/#/api_responses/${token}`);
+    }).fail(function (data) {
+      response = data.responseJSON;
+      console.log(response.errors);
+    });
   }
 
   requestData() {
@@ -103,16 +104,25 @@ class ApiRequestForm extends React.Component {
       username: this.state.username,
       password: this.state.password,
       request_headers: this.requestHeaders(),
-      request_params: this.requestParams()
     }
   }
 
   requestHeaders() {
-
+    const headers = this.state.headers.map((element) => {
+      return _.pick(element, 'key', 'value');
+    })
+    return headers
   }
 
   requestParams() {
-
+    if (this.state.showRequestBody) {
+      return { request_body: this.state.request_body }
+    } else {
+      const parameters = this.state.params.map((element) => {
+        return _.pick(element, 'key', 'value');
+      })
+      return { request_parameters: parameters }
+    }
   }
 
   render() {
@@ -135,7 +145,7 @@ class ApiRequestForm extends React.Component {
               <div className="form-group">
                 <div className="row">
                   <div className="col-sm-3">
-                    <SelectForMethods handleChange={event => this.handleChange(event)} />
+                    <SelectForMethods handleChange={event => this.handleChange(event)} defaultMethod={this.state.method} />
                   </div>
                   <div className="col-sm-9">
                     <input type="text" className="form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
@@ -252,9 +262,9 @@ const ValueInput = ({ inputValueName, handleValueChange }) => {
   );
 };
 
-const SelectForMethods = ({ handleChange }) => {
+const SelectForMethods = ({ handleChange, defaultMethod }) => {
   return (
-    <select className="form-control required" name="method" defaultValue="get" onChange={handleChange}>
+    <select className="form-control required" name="method" defaultValue={defaultMethod} onChange={handleChange}>
       <option value="get">GET</option>
       <option value="post">POST</option>
       <option value="put">PUT</option>

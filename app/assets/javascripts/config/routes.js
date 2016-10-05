@@ -5,5 +5,6 @@ import { Route, IndexRoute } from 'react-router';
 
 export default (
   <Route path="/" component={ApiRequestForm}>
+    <Route path="/api_responses/:token" component={ApiResponse} />
   </Route>
 );

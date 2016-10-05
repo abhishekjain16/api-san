@@ -9,21 +9,12 @@ const ApiResponse = ({ response, url, httpMethod, requestParams, requestHeaders 
         <HTTPMethod value={httpMethod} url={url} />
       </div>
       <div className="row">
-        <HTTPStatus value={response.response_code} />
-      </div>
-      <div className="row">
         <List list={requestHeaders} heading="Headers" />
       </div>
       <div className="row">
         <List list={requestParams} heading="Parameters" />
       </div>
       <h3 className="text-center"> Response</h3>
-      <div className="row">
-        <Headers headers={response.response_headers} />
-      </div>
-      <div className="row">
-        <Body response={response} />
-      </div>
     </div>
   );
 };

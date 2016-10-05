@@ -1,6 +1,6 @@
 class ApiRequestsController < ApplicationController
 
   def index
-    render
+    render text: "", :layout => true
   end
 end
