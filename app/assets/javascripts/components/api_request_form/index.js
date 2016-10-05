@@ -2,7 +2,7 @@ import React from 'react';
 import uuid from 'uuid';
 import update from 'react-addons-update';
 import _ from 'underscore';
-import { browserHistory } from 'react-router';
+import { hashHistory } from 'react-router';
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
@@ -91,7 +91,7 @@ class ApiRequestForm extends React.Component {
       url: this.props.formURL, context: this, dataType: 'json', type: 'POST', data: data
     }).done(function (data) {
       const token = data.token;
-      browserHistory.push(`/api_responses/${token}`);
+      hashHistory.push(`/api_responses/${token}`);
     }).fail(function (data) {
       response = data.responseJSON;
       console.log(response.errors);
