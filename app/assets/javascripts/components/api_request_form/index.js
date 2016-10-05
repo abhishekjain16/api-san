@@ -91,7 +91,7 @@ class ApiRequestForm extends React.Component {
       url: this.props.formURL, context: this, dataType: 'json', type: 'POST', data: data
     }).done(function (data) {
       const token = data.token;
-      browserHistory.push(`/#/api_responses/${token}`);
+      browserHistory.push(`/api_responses/${token}`);
     }).fail(function (data) {
       response = data.responseJSON;
       console.log(response.errors);
