@@ -1,5 +1,10 @@
 class RequestService
+  include ActiveModel::Validations
+
   attr_reader :url, :username, :password, :method, :response, :request_params, :request_headers
+  attr_accessor :api_response
+
+  validates :url, :method, presence: true
 
   def initialize(url, method, options={})
     @url = url
@@ -11,12 +16,14 @@ class RequestService
   end
 
   def process
-    begin
-      @response = RestClient::Request.execute(options)
-    rescue RestClient::ExceptionWithResponse => e
-      @response = e.response
+    if valid?
+      begin
+        @response = RestClient::Request.execute(options)
+      rescue RestClient::ExceptionWithResponse => e
+        @response = e.response
+      end
+      self.api_response = save_api_response
     end
-    save_api_response
   end
 
   private

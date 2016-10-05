@@ -1,36 +1,20 @@
-import ReactDOM from 'react-dom';
 import React from 'react';
-import ApiRequestForm from 'components/api_request_form';
-import ApiResponse from 'components/api_response';
+import ReactDOM from 'react-dom';
+import { Router, browserHistory } from 'react-router';
+import routes from '../config/routes';
 
 class ApiRadar {
-  constructor() {
-    this.components = {};
-    this.registerComponent('ApiRequestForm', ApiRequestForm);
-    this.registerComponent('ApiResponse', ApiResponse);
-  }
-
-  registerComponent(name, component) {
-    this.components[name] = component;
-  }
-/*eslint-disable */
-  loadReactComponents() {
-    $("[data-integration-name='react-component']").each((i, element) => {
-      const jqueryElement = $(element);
-      const componentName = jqueryElement.data('react-class');
-      const payload = jqueryElement.data('react-props');
-      ReactDOM.render(
-        React.createElement(this.components[componentName], payload),
-        element
-      );
-    });
-/*eslint-enable */
+  static loadReactComponents() {
+    ReactDOM.render((
+      <Router history={browserHistory}>
+        {routes}
+      </Router>
+    ), document.getElementById('react-container'));
   }
 }
 
 /*eslint-disable */
 $(() => {
-  const apiRadar = new ApiRadar();
-  apiRadar.loadReactComponents();
+  ApiRadar.loadReactComponents();
 });
 /*eslint-enable */

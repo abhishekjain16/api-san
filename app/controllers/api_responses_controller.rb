@@ -8,8 +8,13 @@ class ApiResponsesController < ApplicationController
   end
 
   def create
-    api_response = RequestService.new(params[:url], params[:method], options).process
-    redirect_to api_response_path(id: api_response.token)
+    request_service = RequestService.new(params[:url], params[:method], options)
+    request_service.process
+    if request_service.errors.present?
+      render json: request_service.errors
+    else
+      render json: request_service.api_response
+    end
   end
 
   private
