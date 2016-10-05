@@ -43,13 +43,13 @@ class ApiRequestForm extends React.Component {
 
   removeParam(event, paramId) {
     event.preventDefault();
-    const params = this.state.params.filter((element) => element.id !== paramId);
+    const params = this.state.params.filter(element => element.id !== paramId);
     this.setState({ params });
   }
 
   removeHeader(event, headerId) {
     event.preventDefault();
-    const headers = this.state.headers.filter((element) => element.id !== headerId);
+    const headers = this.state.headers.filter(element => element.id !== headerId);
     this.setState({ headers });
   }
 
@@ -58,34 +58,35 @@ class ApiRequestForm extends React.Component {
   }
 
   handleChange(event) {
-    let change = {};
+    const change = {};
     change[event.target.name] = event.target.value;
     this.setState(change);
   }
 
   handleParamChange(event, id) {
-    const param = _.find(this.state.params, (element) => element.id == id);
+    const param = _.find(this.state.params, element => element.id === id);
     param[event.target.dataset.type] = event.target.value;
 
-    this.updateAndSet(this.state.params, param, 'params')
+    this.updateAndSet(this.state.params, param, 'params');
   }
 
   handleHeaderChange(event, id) {
-    const header = _.find(this.state.headers, (element) => element.id == id);
+    const header = _.find(this.state.headers, element => element.id === id);
     header[event.target.dataset.type] = event.target.value;
 
-    this.updateAndSet(this.state.headers, header, 'headers')
+    this.updateAndSet(this.state.headers, header, 'headers');
   }
 
   updateAndSet(list, element, stateName) {
-    let change = {};
-    change[stateName] = update(list, {$merge: element});
+    const change = {};
+    change[stateName] = update(list, { $merge: element });
     this.setState(change);
   }
 
   handleSubmit(event) {
     event.preventDefault();
     const data = _.extend(this.requestParams(), this.requestData());
+    /*eslint-disable */
     $.ajax({
       url: this.props.formURL, context: this, dataType: 'json', type: 'POST', data: data
     }).done(function (data) {
@@ -95,6 +96,7 @@ class ApiRequestForm extends React.Component {
       response = data.responseJSON;
       console.log(response.errors);
     });
+    /*eslint-enable */
   }
 
   requestData() {
@@ -104,24 +106,24 @@ class ApiRequestForm extends React.Component {
       username: this.state.username,
       password: this.state.password,
       request_headers: this.requestHeaders(),
-    }
+    };
   }
 
   requestHeaders() {
     const headers = this.state.headers.map((element) => {
       return _.pick(element, 'key', 'value');
-    })
-    return headers
+    });
+    return headers;
   }
 
   requestParams() {
     if (this.state.showRequestBody) {
-      return { request_body: this.state.request_body }
+      return { request_body: this.state.request_body };
     } else {
       const parameters = this.state.params.map((element) => {
         return _.pick(element, 'key', 'value');
-      })
-      return { request_parameters: parameters }
+      });
+      return { request_parameters: parameters };
     }
   }
 
@@ -249,7 +251,7 @@ const RequestHeaderInput = ({ removeHeader, handleHeaderChange }) => {
 const KeyInput = ({ inputKeyName, handleKeyChange }) => {
   return (
     <div className="col-sm-5">
-      <input type="text" name={inputKeyName} className="form-control" placeholder="Enter Name" onChange={handleKeyChange} data-type="key"/>
+      <input type="text" name={inputKeyName} className="form-control" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" />
     </div>
   );
 };
