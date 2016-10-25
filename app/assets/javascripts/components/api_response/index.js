@@ -103,7 +103,7 @@ const List = ({ list, heading }) => {
 
 const ListItemPair = ({ listKey, listValue }) => {
   return (
-    <li className="list-group-item">
+    <li className="list-group-item list-headers">
       {listKey}: {listValue}
     </li>
   );
