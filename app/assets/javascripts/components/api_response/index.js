@@ -6,7 +6,7 @@ class ApiResponse extends React.Component {
     super(props);
 
     this.state = {
-      response: {response_code: '', response_headers: {}, response_body: {}},
+      response: { response_code: '', response_headers: {}, response_body: {} },
       url: '',
       httpMethod: '',
       requestParams: [],
@@ -16,7 +16,7 @@ class ApiResponse extends React.Component {
 
   componentWillMount() {
     const token = this.props.params.token;
-    const url = `/api_responses/${token}`
+    const url = `/api_responses/${token}`;
     /*eslint-disable */
     $.ajax({
       url: url, context: this, dataType: 'json', type: 'GET'
@@ -53,7 +53,7 @@ class ApiResponse extends React.Component {
       </div>
     );
   }
-};
+}
 
 const Styles = {
   parsedJson: { backgroundColor: 'initial' },
