@@ -10,14 +10,13 @@ class ApiResponsesControllerTest < ActionController::TestCase
 
     RestClient::Request.expects(:execute).returns(mock_response)
 
-    post :create, params: { url: url, method: 'get', request_headers: [{'key' => "some_request_key", 'value' => 'some_request_value'}] }
+    post :create, params: { url: url, method: 'get', request_headers: {"0" => {'key' => "some_request_key", 'value' => 'some_request_value'}} }
 
     api_response = ApiResponse.last
     assert_equal '200', api_response.status_code
     assert_equal({"body"=>"{id: 1}"}, api_response.response)
     assert_equal({"content_type" => 'application/json'}, api_response.response_headers)
     assert_equal({"some_request_key" => "some_request_value"}, api_response.request_headers)
-    assert_redirected_to api_response_path(id: api_response.token)
   end
 
   def test_create_with_post_request_and_request_params
@@ -31,8 +30,8 @@ class ApiResponsesControllerTest < ActionController::TestCase
 
     post :create, params: { url: url,
                             method: 'post',
-                            request_parameters: [{'key' => "some_parameter_key", 'value' => 'some_value'}],
-                            request_headers: [{'key' => "some_request_key", 'value' => 'some_request_value'}]
+                            request_parameters: { "0" => {'key' => "some_parameter_key", 'value' => 'some_value'} },
+                            request_headers: {"0" => {'key' => "some_request_key", 'value' => 'some_request_value'} }
                           }
 
     api_response = ApiResponse.last
@@ -40,7 +39,6 @@ class ApiResponsesControllerTest < ActionController::TestCase
     assert_equal({"body"=>"{id: 1}"}, api_response.response)
     assert_equal({"some_parameter_key" => "some_value"}, api_response.request_params)
     assert_equal({"some_request_key" => "some_request_value"}, api_response.request_headers)
-    assert_redirected_to api_response_path(id: api_response.token)
   end
 
   def test_create_with_put_request_and_request_body
@@ -57,7 +55,6 @@ class ApiResponsesControllerTest < ActionController::TestCase
     api_response = ApiResponse.last
     assert_equal '200', api_response.status_code
     assert_equal({"post"=>"{\"title\"=>\"New title\"}"}, api_response.request_params)
-    assert_redirected_to api_response_path(id: api_response.token)
   end
 
   def test_show_success
