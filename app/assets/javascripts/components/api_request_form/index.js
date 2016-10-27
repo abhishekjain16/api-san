@@ -93,7 +93,7 @@ class ApiRequestForm extends React.Component {
       const token = data.token;
       hashHistory.push(`/api_responses/${token}`);
     }).fail(function (data) {
-      response = data.responseJSON;
+      const response = data.responseJSON;
       console.log(response.errors);
     });
     /*eslint-enable */

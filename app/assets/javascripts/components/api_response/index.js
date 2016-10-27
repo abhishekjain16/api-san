@@ -1,31 +1,58 @@
 import React from 'react';
 import _ from 'underscore';
 
-const ApiResponse = ({ response, url, httpMethod, requestParams, requestHeaders }) => {
-  return (
-    <div>
-      <h3 className="text-center"> Request</h3>
-      <div className="row">
-        <HTTPMethod value={httpMethod} url={url} />
+class ApiResponse extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      response: {response_code: '', response_headers: {}, response_body: {}},
+      url: '',
+      httpMethod: '',
+      requestParams: [],
+      requestHeaders: [],
+    };
+  }
+
+  componentWillMount() {
+    const token = this.props.params.token;
+    const url = `/api_responses/${token}`
+    /*eslint-disable */
+    $.ajax({
+      url: url, context: this, dataType: 'json', type: 'GET'
+    }).done(function (data) {
+      this.setState(data);
+    }).fail(function (data) {
+    });
+    /*eslint-enable */
+  }
+
+  render() {
+    return (
+      <div>
+        <h3 className="text-center"> Request</h3>
+        <div className="row">
+          <HTTPMethod value={this.state.httpMethod} url={this.state.url} />
+        </div>
+        <div className="row">
+          <HTTPStatus value={this.state.response.response_code} />
+        </div>
+        <div className="row">
+          <List list={this.state.requestHeaders} heading="Headers" />
+        </div>
+        <div className="row">
+          <List list={this.state.requestParams} heading="Parameters" />
+        </div>
+        <h3 className="text-center"> Response</h3>
+        <div className="row">
+          <Headers headers={this.state.response.response_headers} />
+        </div>
+        <div className="row">
+          <Body response={this.state.response} />
+        </div>
       </div>
-      <div className="row">
-        <HTTPStatus value={response.response_code} />
-      </div>
-      <div className="row">
-        <List list={requestHeaders} heading="Headers" />
-      </div>
-      <div className="row">
-        <List list={requestParams} heading="Parameters" />
-      </div>
-      <h3 className="text-center"> Response</h3>
-      <div className="row">
-        <Headers headers={response.response_headers} />
-      </div>
-      <div className="row">
-        <Body response={response} />
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 const Styles = {
