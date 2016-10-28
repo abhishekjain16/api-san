@@ -3,6 +3,7 @@ import uuid from 'uuid';
 import update from 'react-addons-update';
 import _ from 'underscore';
 import { hashHistory } from 'react-router';
+import Loader from 'react-loader'
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class ApiRequestForm extends React.Component {
       showRequestBody: false,
       showAuthentication: false,
       errors: {},
+      loaded: true,
     };
   }
 
@@ -86,16 +88,25 @@ class ApiRequestForm extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault();
+
     const data = _.extend(this.requestParams(), this.requestData());
+
     /*eslint-disable */
     $.ajax({
-      url: this.props.formURL, context: this, dataType: 'json', type: 'POST', data: data
+      url: this.props.formURL,
+      context: this,
+      dataType: 'json',
+      type: 'POST',
+      data: data,
+      beforeSend: this.setState({loaded: false})
     }).done(function (data) {
       const token = data.token;
       hashHistory.push(`/api_responses/${token}`);
     }).fail(function (data) {
       const response = data.responseJSON;
       this.setState({errors: response.errors})
+    }).complete(function() {
+      this.setState({loaded: true})
     });
     /*eslint-enable */
   }
@@ -191,7 +202,8 @@ class ApiRequestForm extends React.Component {
               </div>
 
               <div className="form-buttons text-center row">
-                <button type="submit" className="btn btn-primary btn-block">Launch Request</button>
+                <Loader loaded={this.state.loaded} zIndex={2e9} />
+                <button type="submit" className="btn btn-primary btn-block" disabled={!this.state.loaded}>Launch Request</button>
               </div>
 
             </form>
