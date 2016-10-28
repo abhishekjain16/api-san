@@ -58,18 +58,25 @@ class ApiResponsesControllerTest < ActionController::TestCase
   end
 
   def test_show_success
-    service = RequestService.new(url, 'get', {username: "username", password: "password", request_params: {}, request_headers: {"Content_Type" => "application/json"}})
-    response = mock('RestClient::Response')
-    response.expects(:body).returns('{id: 1}')
-    response.expects(:headers).returns({})
-    response.expects(:code).returns(200)
-    RestClient::Request.expects(:execute).with(url: "http://www.example.com", method: 'get', verify_ssl: false, user: "username", password: "password", :headers => {"Content_Type" => "application/json"}, :payload => {}).returns(response)
-    service.process
-
-    api_response = ApiResponse.last
+    api_response = api_responses(:one)
 
     get :show, params: { id: api_response.token }
+
+    expected_response = {
+      url: "http://example.com",
+      httpMethod: "POST",
+      requestParams: {"user[name]": "John"},
+      requestHeaders: {"content_type": "application/json"},
+      response: {
+        response_headers: {"content_type": "application/json"},
+        response_body: api_response.response['body'],
+        response_code: "200"
+      }
+    }.to_json
+
     assert_response :success
+    assert_equal expected_response, response.body
+
   end
 
   private

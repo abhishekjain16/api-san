@@ -1,0 +1,9 @@
+one:
+  token: "abcdefghijk"
+  url: "http://example.com"
+  method: "POST"
+  response: {"body": {"id": "1", "name": "john"}}
+  response_headers: {"content_type": "application/json"}
+  request_params: {"user[name]": "John"}
+  status_code: 200
+  request_headers: {"content_type": "application/json"}
