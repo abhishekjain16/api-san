@@ -3,7 +3,7 @@ import uuid from 'uuid';
 import update from 'react-addons-update';
 import _ from 'underscore';
 import { hashHistory } from 'react-router';
-import Loader from 'react-loader'
+import Loader from 'react-loader';
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
