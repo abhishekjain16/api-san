@@ -1,6 +1,6 @@
 class ApiResponsesController < ApplicationController
 
-  before_action :get_api_request, only: [:show]
+  before_action :get_api_response, only: [:show]
   skip_before_action :verify_authenticity_token
 
   def show
@@ -19,9 +19,9 @@ class ApiResponsesController < ApplicationController
 
   private
 
-  def get_api_request
+  def get_api_response
     unless @api_response = ApiResponse.find_by({token: params[:id]})
-      render 404
+      render json: {error: "Invalid Page"}, status: 404
     end
   end
 

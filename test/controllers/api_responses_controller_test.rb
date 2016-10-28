@@ -79,6 +79,13 @@ class ApiResponsesControllerTest < ActionController::TestCase
 
   end
 
+  def test_show_invalid_page
+    get :show, params: { id: 'invalid_token' }
+    expected_response = {error: 'Invalid Page'}
+
+    assert_equal expected_response.to_json, response.body
+  end
+
   private
 
   def url

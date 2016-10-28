@@ -11,49 +11,87 @@ class ApiResponse extends React.Component {
       httpMethod: '',
       requestParams: [],
       requestHeaders: [],
+      not_found: false,
+      server_error: false,
     };
   }
 
   componentWillMount() {
     const token = this.props.params.token;
     const url = `/api_responses/${token}`;
+
     /*eslint-disable */
     $.ajax({
       url: url, context: this, dataType: 'json', type: 'GET'
     }).done(function (data) {
       this.setState(data);
     }).fail(function (data) {
+      if (data.status == 404) {
+        this.setState({not_found: true})
+      } else {
+        this.setState({server_error: true})
+      }
     });
     /*eslint-enable */
   }
 
   render() {
-    return (
-      <div>
-        <h3 className="text-center"> Request</h3>
-        <div className="row">
-          <HTTPMethod value={this.state.httpMethod} url={this.state.url} />
-        </div>
-        <div className="row">
-          <HTTPStatus value={this.state.response.response_code} />
-        </div>
-        <div className="row">
-          <List list={this.state.requestHeaders} heading="Headers" />
-        </div>
-        <div className="row">
-          <List list={this.state.requestParams} heading="Parameters" />
-        </div>
-        <h3 className="text-center"> Response</h3>
-        <div className="row">
-          <Headers headers={this.state.response.response_headers} />
-        </div>
-        <div className="row">
-          <Body response={this.state.response} />
-        </div>
-      </div>
-    );
+    if (this.state.not_found) {
+      return <NotFound />;
+    } else if (this.state.server_error) {
+      return <ServerError />;
+    } else {
+      return (
+        <ApiResponseView
+          httpMethod={this.state.httpMethod}
+          url={this.state.url}
+          response={this.state.response}
+          requestHeaders={this.state.requestHeaders}
+          requestParams={this.state.requestParams} />
+      );
+    }
   }
 }
+
+const ApiResponseView = ({ httpMethod, url, response, requestHeaders, requestParams }) => {
+  return (
+    <div>
+      <h3 className="text-center"> Request</h3>
+      <div className="row">
+        <HTTPMethod value={httpMethod} url={url} />
+      </div>
+      <div className="row">
+        <HTTPStatus value={response.response_code} />
+      </div>
+      <div className="row">
+        <List list={requestHeaders} heading="Headers" />
+      </div>
+      <div className="row">
+        <List list={requestParams} heading="Parameters" />
+      </div>
+      <h3 className="text-center"> Response</h3>
+      <div className="row">
+        <Headers headers={response.response_headers} />
+      </div>
+      <div className="row">
+        <Body response={response} />
+      </div>
+    </div>
+  );
+};
+
+const NotFound = () => {
+  return (
+    <h2 className="text-center">The page you are looking for does not exist </h2>
+  );
+};
+
+const ServerError = () => {
+  return (
+    <h2 className="text-center">Something went wrong. Please try again later</h2>
+  );
+};
+
 
 const Styles = {
   parsedJson: { backgroundColor: 'initial' },

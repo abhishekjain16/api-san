@@ -18,6 +18,7 @@ class ApiRequestForm extends React.Component {
       headers: [],
       showRequestBody: false,
       showAuthentication: false,
+      errors: {},
     };
   }
 
@@ -94,7 +95,7 @@ class ApiRequestForm extends React.Component {
       hashHistory.push(`/api_responses/${token}`);
     }).fail(function (data) {
       const response = data.responseJSON;
-      console.log(response.errors);
+      this.setState({errors: response.errors})
     });
     /*eslint-enable */
   }
@@ -148,9 +149,11 @@ class ApiRequestForm extends React.Component {
                 <div className="row">
                   <div className="col-sm-3">
                     <SelectForMethods handleChange={event => this.handleChange(event)} defaultMethod={this.state.method} />
+                    <Error messages={this.state.errors.method} />
                   </div>
                   <div className="col-sm-9">
                     <input type="text" className="form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
+                    <Error messages={this.state.errors.url} />
                   </div>
                 </div>
               </div>
@@ -246,6 +249,14 @@ const RequestHeaderInput = ({ removeHeader, handleHeaderChange }) => {
       </div>
     </div>
   );
+};
+
+const Error = ({ messages }) => {
+  if (messages) {
+    return <span className="text-danger pull-left">{messages.join()}</span>;
+  } else {
+    return <span />;
+  }
 };
 
 const KeyInput = ({ inputKeyName, handleKeyChange }) => {
