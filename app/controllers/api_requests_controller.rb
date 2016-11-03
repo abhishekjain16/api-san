@@ -1,6 +1,6 @@
 class ApiRequestsController < ApplicationController
 
   def index
-    render
+    render html: "", layout: true
   end
 end

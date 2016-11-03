@@ -1,22 +1,27 @@
 class ApiResponsesController < ApplicationController
 
-  before_action :get_api_request, only: [:show]
+  before_action :get_api_response, only: [:show]
   skip_before_action :verify_authenticity_token
 
   def show
-    render
+    render json: api_response
   end
 
   def create
-    api_response = RequestService.new(params[:url], params[:method], options).process
-    redirect_to api_response_path(id: api_response.token)
+    request_service = RequestService.new(params[:url], params[:method], options)
+    request_service.process
+    if request_service.errors.present?
+      render json: request_service, status: 422
+    else
+      render json: request_service.api_response, status: 200
+    end
   end
 
   private
 
-  def get_api_request
+  def get_api_response
     unless @api_response = ApiResponse.find_by({token: params[:id]})
-      render 404
+      render json: {error: "Invalid Page"}, status: 404
     end
   end
 
@@ -33,8 +38,6 @@ class ApiResponsesController < ApplicationController
       }
     }
   end
-
-  helper_method :api_response
 
   def options
     api_request_parser_service = ApiRequestParserService.new(params)
