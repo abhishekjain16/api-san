@@ -11,8 +11,8 @@ class ApiResponse extends React.Component {
       httpMethod: '',
       requestParams: [],
       requestHeaders: [],
-      not_found: false,
-      server_error: false,
+      notFound: false,
+      serverError: false,
     };
   }
 
@@ -27,18 +27,18 @@ class ApiResponse extends React.Component {
       this.setState(data);
     }).fail(function (data) {
       if (data.status == 404) {
-        this.setState({not_found: true})
+        this.setState({notFound: true})
       } else {
-        this.setState({server_error: true})
+        this.setState({serverError: true})
       }
     });
     /*eslint-enable */
   }
 
   render() {
-    if (this.state.not_found) {
+    if (this.state.notFound) {
       return <NotFound />;
-    } else if (this.state.server_error) {
+    } else if (this.state.serverError) {
       return <ServerError />;
     } else {
       return (
