@@ -63,7 +63,7 @@ class ApiRequestForm extends React.Component {
   handleChange(event) {
     this.setState({
       [event.target.name]: event.target.value,
-    })
+    });
   }
 
   handleParamChange(event, id) {
