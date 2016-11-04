@@ -31,6 +31,9 @@ class ApiResponsesController < ApplicationController
       httpMethod: @api_response.method,
       requestParams: @api_response.request_params,
       requestHeaders: @api_response.request_headers,
+      requestBody: @api_response.request_body,
+      username: @api_response.username,
+      password: @api_response.password,
       response: {
         response_headers: @api_response.response_headers,
         response_body: @api_response.response['body'],

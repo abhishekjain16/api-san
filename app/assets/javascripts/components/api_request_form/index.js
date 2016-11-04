@@ -10,15 +10,15 @@ class ApiRequestForm extends React.Component {
     super(props);
 
     this.state = {
-      url: '',
-      method: 'get',
-      username: '',
-      password: '',
-      request_body: '',
-      params: [],
-      headers: [],
+      url: this.props.url || '',
+      method: this.props.method || 'get',
+      username: this.props.username || '',
+      password: this.props.password || '',
+      request_body: this.props.request_body || '',
+      params: this.props.request_params || [],
+      headers: this.props.request_headers || [],
       showRequestBody: false,
-      showAuthentication: false,
+      showAuthentication: this.props.showAuthentication || false,
       errors: {},
       loaded: true,
     };
@@ -143,12 +143,12 @@ class ApiRequestForm extends React.Component {
     const params = this.state.params.map((param) => {
       const removeParam = event => this.removeParam(event, param.id);
       const handleParamChange = event => this.handleParamChange(event, param.id);
-      return <RequestParameterInput key={param.id} removeParam={removeParam} handleParamChange={handleParamChange} />;
+      return <RequestParameterInput key={param.id} removeParam={removeParam} handleParamChange={handleParamChange} param={param} />;
     });
     const headers = this.state.headers.map((header) => {
       const removeHeader = event => this.removeHeader(event, header.id);
       const handleHeaderChange = event => this.handleHeaderChange(event, header.id);
-      return <RequestHeaderInput key={header.id} removeHeader={removeHeader} handleHeaderChange={handleHeaderChange} />;
+      return <RequestHeaderInput key={header.id} removeHeader={removeHeader} handleHeaderChange={handleHeaderChange} header={header} />;
     });
     return (
       <div className="row">
@@ -163,7 +163,7 @@ class ApiRequestForm extends React.Component {
                     <Error messages={this.state.errors.method} />
                   </div>
                   <div className="col-sm-9">
-                    <input type="text" className="form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
+                    <input value={this.state.url} type="text" className="form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
                     <Error messages={this.state.errors.url} />
                   </div>
                 </div>
@@ -171,9 +171,9 @@ class ApiRequestForm extends React.Component {
 
               <div className="form-group">
                 <div className="checkbox">
-                  <label htmlFor="authentication"><input type="checkbox" onChange={event => this.handleCheckboxChange(event)} />Basic Authentication</label>
+                  <label htmlFor="authentication"><input type="checkbox" checked={this.state.showAuthentication} onChange={event => this.handleCheckboxChange(event)} />Basic Authentication</label>
                 </div>
-                <Authentication showAuthentication={this.state.showAuthentication} handleChange={event => this.handleChange(event)} />
+                <Authentication username={this.state.username} password={this.state.password} showAuthentication={this.state.showAuthentication} handleChange={event => this.handleChange(event)} />
               </div>
 
               <div className="form-group">
@@ -196,7 +196,7 @@ class ApiRequestForm extends React.Component {
                   </div>
                   <div className="row form-controls">
                     {params}
-                    <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} />
+                    <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} value={this.state.request_body} />
                   </div>
                 </div>
               </div>
@@ -227,19 +227,19 @@ const AddRequestBody = ({ addBody }) => {
   return <a href="" onClick={event => addBody(event)} className="devise-links"> (+) Add Body</a>;
 };
 
-const RequestBody = ({ showRequestBody, handleChange }) => {
+const RequestBody = ({ showRequestBody, handleChange, value }) => {
   return (
     showRequestBody ?
-      <textarea name="request_body" placeholder="Enter Request Body" rows="8" cols="8" className="form-control" onChange={handleChange} /> :
+      <textarea name="request_body" placeholder="Enter Request Body" rows="8" cols="8" className="form-control" onChange={handleChange} value={value} /> :
       <div />
   );
 };
 
-const RequestParameterInput = ({ removeParam, handleParamChange }) => {
+const RequestParameterInput = ({ removeParam, handleParamChange, param }) => {
   return (
     <div className="row form-controls form-input-text">
-      <KeyInput inputKeyName="request_parameters[][key]" handleKeyChange={handleParamChange} />
-      <ValueInput inputValueName="request_parameters[][value]" handleValueChange={handleParamChange} />
+      <KeyInput inputKeyName="request_parameters[][key]" handleKeyChange={handleParamChange} value={param.key} />
+      <ValueInput inputValueName="request_parameters[][value]" handleValueChange={handleParamChange} value={param.value} />
       <div className="col-sm-2">
         <a href="" className="fa fa-2x fa-times" onClick={removeParam}>
           <span />
@@ -249,11 +249,11 @@ const RequestParameterInput = ({ removeParam, handleParamChange }) => {
   );
 };
 
-const RequestHeaderInput = ({ removeHeader, handleHeaderChange }) => {
+const RequestHeaderInput = ({ removeHeader, handleHeaderChange, header }) => {
   return (
     <div className="row form-controls form-input-text">
-      <KeyInput inputKeyName="request_headers[][key]" handleKeyChange={handleHeaderChange} />
-      <ValueInput inputValueName="request_headers[][value]" handleValueChange={handleHeaderChange} />
+      <KeyInput inputKeyName="request_headers[][key]" handleKeyChange={handleHeaderChange} value={header.key} />
+      <ValueInput inputValueName="request_headers[][value]" handleValueChange={handleHeaderChange} value={header.value} />
       <div className="col-sm-2">
         <a href="" className="fa fa-2x fa-times" onClick={removeHeader}>
           <span />
@@ -271,25 +271,25 @@ const Error = ({ messages }) => {
   }
 };
 
-const KeyInput = ({ inputKeyName, handleKeyChange }) => {
+const KeyInput = ({ inputKeyName, handleKeyChange, value }) => {
   return (
     <div className="col-sm-5">
-      <input type="text" name={inputKeyName} className="form-control" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" />
+      <input type="text" value={value} name={inputKeyName} className="form-control" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" />
     </div>
   );
 };
 
-const ValueInput = ({ inputValueName, handleValueChange }) => {
+const ValueInput = ({ inputValueName, handleValueChange, value }) => {
   return (
     <div className="col-sm-5">
-      <input type="text" name={inputValueName} className="form-control" placeholder="Enter Value" onChange={handleValueChange} data-type="value" />
+      <input type="text" value={value} name={inputValueName} className="form-control" placeholder="Enter Value" onChange={handleValueChange} data-type="value" />
     </div>
   );
 };
 
 const SelectForMethods = ({ handleChange, defaultMethod }) => {
   return (
-    <select className="form-control required" name="method" defaultValue={defaultMethod} onChange={handleChange}>
+    <select className="form-control required" name="method" defaultValue={defaultMethod.toLowerCase()} onChange={handleChange}>
       <option value="get">GET</option>
       <option value="post">POST</option>
       <option value="put">PUT</option>
@@ -299,15 +299,15 @@ const SelectForMethods = ({ handleChange, defaultMethod }) => {
   );
 };
 
-const Authentication = ({ showAuthentication, handleChange }) => {
+const Authentication = ({ showAuthentication, handleChange, username, password }) => {
   if (showAuthentication) {
     return (
       <div className="row">
         <div className="col-sm-6">
-          <input type="text" className="form-control" name="username" placeholder="Enter username" onChange={handleChange} />
+          <input type="text" value={username} className="form-control" name="username" placeholder="Enter username" onChange={handleChange} />
         </div>
         <div className="col-sm-6">
-          <input type="text" className="form-control" name="password" placeholder="Enter password" onChange={handleChange} />
+          <input type="text" value={password} className="form-control" name="password" placeholder="Enter password" onChange={handleChange} />
         </div>
       </div>
     );

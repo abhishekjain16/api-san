@@ -1,7 +1,7 @@
 class RequestService
   include ActiveModel::Validations
 
-  attr_reader :url, :username, :password, :method, :response, :request_params, :request_headers
+  attr_reader :url, :username, :password, :method, :response, :request_params, :request_headers, :request_body
   attr_accessor :api_response
 
   validates :url, :method, presence: true
@@ -12,6 +12,7 @@ class RequestService
     @username = options[:username]
     @password = options[:password]
     @request_params = options[:request_params]
+    @request_body = options[:request_body]
     @request_headers = options[:request_headers]
   end
 
@@ -35,7 +36,11 @@ class RequestService
                         response_headers: response.headers,
                         status_code: response.code,
                         request_headers: request_headers,
-                        request_params: request_params.is_a?(String) ? JSON.parse(request_params) : request_params )
+                        request_params: request_params.is_a?(String) ? JSON.parse(request_params) : request_params,
+                        username: username,
+                        password: password,
+                        request_body: request_body
+                       )
   end
 
   def authorization_options

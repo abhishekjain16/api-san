@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import _ from 'underscore';
 
 class ApiResponse extends React.Component {
@@ -47,16 +48,18 @@ class ApiResponse extends React.Component {
           url={this.state.url}
           response={this.state.response}
           requestHeaders={this.state.requestHeaders}
-          requestParams={this.state.requestParams} />
+          requestParams={this.state.requestParams}
+          token={this.props.params.token} />
       );
     }
   }
 }
 
-const ApiResponseView = ({ httpMethod, url, response, requestHeaders, requestParams }) => {
+const ApiResponseView = ({ httpMethod, url, response, requestHeaders, requestParams, token }) => {
   return (
     <div>
       <h3 className="text-center"> Request</h3>
+      <Link className="btn btn-primary pull-right" to={`/api_responses/${token}/edit`}>Edit</Link>
       <div className="row">
         <HTTPMethod value={httpMethod} url={url} />
       </div>

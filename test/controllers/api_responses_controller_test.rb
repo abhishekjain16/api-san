@@ -67,6 +67,9 @@ class ApiResponsesControllerTest < ActionController::TestCase
       httpMethod: "POST",
       requestParams: {"user[name]": "John"},
       requestHeaders: {"content_type": "application/json"},
+      requestBody: '{"user[name]": "John"}',
+      username: 'admin',
+      password: 'password',
       response: {
         response_headers: {"content_type": "application/json"},
         response_body: api_response.response['body'],
