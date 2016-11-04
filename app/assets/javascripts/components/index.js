@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Router, hashHistory } from 'react-router';
 import routes from '../config/routes';
 
-class ApiRadar {
+class ApiSanity {
   static loadReactComponents() {
     ReactDOM.render((
       <Router history={hashHistory}>
@@ -15,6 +15,6 @@ class ApiRadar {
 
 /*eslint-disable */
 $(() => {
-  ApiRadar.loadReactComponents();
+  ApiSanity.loadReactComponents();
 });
 /*eslint-enable */

@@ -1,4 +1,4 @@
-Apiradar::Application.routes.draw do
+Apisanity::Application.routes.draw do
 
   resources :api_requests do
     collection do

@@ -1,7 +1,7 @@
 {
-  "name": "apiradar",
+  "name": "apisanity",
   "version": "1.0.0",
-  "description": "[![CircleCI](https://circleci.com/gh/bigbinary/apiradar/tree/master.svg?style=svg&circle-token=bf02c79488ee7343d9f7e7c43f93825d5584cc65)](https://circleci.com/gh/bigbinary/apiradar/tree/master)",
+  "description": "[![CircleCI](https://circleci.com/gh/bigbinary/apisanity/tree/master.svg?style=svg&circle-token=bf02c79488ee7343d9f7e7c43f93825d5584cc65)](https://circleci.com/gh/bigbinary/apisanity/tree/master)",
   "main": "index.js",
   "directories": {
     "doc": "doc",
@@ -12,13 +12,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bigbinary/apiradar.git"
+    "url": "git+https://github.com/bigbinary/apisanity.git"
   },
   "author": "",
   "bugs": {
-    "url": "https://github.com/bigbinary/apiradar/issues"
+    "url": "https://github.com/bigbinary/apisanity/issues"
   },
-  "homepage": "https://github.com/bigbinary/apiradar#readme",
+  "homepage": "https://github.com/bigbinary/apisanity#readme",
   "dependencies": {
     "babel-cli": "^6.14.0",
     "babel-core": "^6.14.0",
