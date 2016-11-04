@@ -3,4 +3,4 @@
 
 require_relative 'config/application'
 
-Apiradar::Application.load_tasks
+Apisanity::Application.load_tasks
