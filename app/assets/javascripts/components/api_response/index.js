@@ -1,4 +1,5 @@
 import React from 'react';
+import {ObjectInspector} from 'react-inspector';
 import { Link } from 'react-router';
 import _ from 'underscore';
 
@@ -142,14 +143,33 @@ const ParsedResponse = ({ response }) => {
   }
 };
 
-const ParsedJSONResponse = ({ body }) => {
-  let formattedJson = JSON.stringify(JSON.parse(body), null, 2);
-  formattedJson = `${formattedJson}`;
-  return (
-    <pre style={Styles.parsedJson}>
-      {formattedJson}
-    </pre>
-  );
+class ParsedJSONResponse extends React.Component {
+  constructor() {
+    super();
+    this.toggleParsedJSON = this.toggleParsedJSON.bind(this);
+    this.state = {
+      showFormattedJson: true,
+    }
+  }
+
+  toggleParsedJSON() {
+    this.setState({
+      showFormattedJson: !this.state.showFormattedJson
+    });
+  }
+
+  render() {
+    const parsedJSON = JSON.parse(this.props.body);
+    let formattedJson = JSON.stringify(parsedJSON, null, 2);
+    return (
+      <pre style={Styles.parsedJSON}>
+        <Link className="btn pull-right" onClick={this.toggleParsedJSON}>
+          { this.state.showFormattedJson ? "View raw" : "View formatted" }
+        </Link>
+        { this.state.showFormattedJson ? <ObjectInspector data={parsedJSON} expandPaths={['$']} expandLevel={2} /> : formattedJson }
+      </pre>
+    );
+  }
 };
 
 const List = ({ list, heading }) => {
