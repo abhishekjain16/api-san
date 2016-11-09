@@ -1,5 +1,4 @@
 import React from 'react';
-import {ObjectInspector} from 'react-inspector';
 import { Link } from 'react-router';
 import _ from 'underscore';
 
@@ -147,6 +146,8 @@ class ParsedJSONResponse extends React.Component {
   constructor() {
     super();
     this.toggleParsedJSON = this.toggleParsedJSON.bind(this);
+    this.formatJsonView = this.formatJsonView.bind(this);
+    this.jsonData = this.jsonData.bind(this);
     this.state = {
       showFormattedJson: true,
     }
@@ -158,16 +159,33 @@ class ParsedJSONResponse extends React.Component {
     });
   }
 
+  formatJsonView() {
+    $(this.refs.formattedJSON).jsonView(this.jsonData(), { collapsed: true });
+  }
+
+  jsonData() {
+    return JSON.parse(this.props.body);
+  }
+
+  componentDidMount() {
+    this.formatJsonView();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.formatJsonView();
+  }
+
   render() {
-    const parsedJSON = JSON.parse(this.props.body);
-    let formattedJson = JSON.stringify(parsedJSON, null, 2);
+    let rawJson = JSON.stringify(this.jsonData());
     return (
-      <pre style={Styles.parsedJSON}>
+      <div>
         <Link className="btn pull-right" onClick={this.toggleParsedJSON}>
           { this.state.showFormattedJson ? "View raw" : "View formatted" }
         </Link>
-        { this.state.showFormattedJson ? <ObjectInspector data={parsedJSON} expandPaths={['$']} expandLevel={2} /> : formattedJson }
-      </pre>
+        <pre style={Styles.parsedJSON}>
+          { this.state.showFormattedJson ? <div ref="formattedJSON"></div> : rawJson }
+        </pre>
+      </div>
     );
   }
 };
