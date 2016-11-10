@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import _ from 'underscore';
+import ReactDOM from 'react-dom';
 
 class ApiResponse extends React.Component {
   constructor(props) {
@@ -153,10 +154,12 @@ class ParsedJSONResponse extends React.Component {
     }
   }
 
-  toggleParsedJSON() {
+  toggleParsedJSON(event) {
+    event.preventDefault();
     this.setState({
       showFormattedJson: !this.state.showFormattedJson
     });
+    return false;
   }
 
   formatJsonView() {
@@ -173,15 +176,16 @@ class ParsedJSONResponse extends React.Component {
 
   componentDidUpdate(prevProps, prevState) {
     this.formatJsonView();
+    ReactDOM.findDOMNode(this.refs.jsonResponse).scrollIntoView();
   }
 
   render() {
     let rawJson = JSON.stringify(this.jsonData());
     return (
-      <div>
-        <Link className="btn pull-right" onClick={this.toggleParsedJSON}>
+      <div ref="jsonResponse">
+        <a className="btn pull-right" onClick={this.toggleParsedJSON}>
           { this.state.showFormattedJson ? "View raw" : "View formatted" }
-        </Link>
+        </a>
         <pre style={Styles.parsedJSON}>
           { this.state.showFormattedJson ? <div ref="formattedJSON"></div> : rawJson }
         </pre>
