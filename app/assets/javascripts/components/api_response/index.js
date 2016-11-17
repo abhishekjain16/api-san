@@ -15,6 +15,7 @@ class ApiResponse extends React.Component {
       requestHeaders: [],
       notFound: false,
       serverError: false,
+      activeTab: 'body'
     };
   }
 
@@ -56,32 +57,53 @@ class ApiResponse extends React.Component {
   }
 }
 
-const ApiResponseView = ({ httpMethod, url, response, requestHeaders, requestParams, token }) => {
-  return (
-    <div>
-      <h3 className="text-center"> Request</h3>
-      <Link className="btn btn-primary pull-right" to={`/api_responses/${token}/edit`}>Edit</Link>
-      <div className="row">
-        <HTTPMethod value={httpMethod} url={url} />
+class ApiResponseView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      activeTab: 'body'
+    };
+  }
+
+  render () {
+    let { httpMethod, url, response, requestHeaders, requestParams, token } = this.props;
+    return (
+      <div>
+        <div className="api-res__req-panel">
+          <h3>
+            Request &nbsp;
+            <Link to={`/api_responses/${token}/edit`}>Edit</Link>
+          </h3>
+          <HTTPMethod value={httpMethod} url={url} />
+          <HTTPStatus value={response.response_code} />
+        </div>
+        <div className="row">
+          <List list={requestHeaders} heading="Headers" />
+        </div>
+        <div className="row">
+          <List list={requestParams} heading="Parameters" />
+        </div>
+        <h3>Response</h3>
+        <ul className="nav nav-tabs api-res__req-tabs">
+          <li className={this.state.activeTab === 'body' ? 'active' : ''}>
+            <a onClick={()=>{this.setState({activeTab: 'body'})}}>Body</a>
+          </li>
+          <li className={this.state.activeTab === 'headers' ? 'active' : ''}>
+            <a onClick={()=>{this.setState({activeTab: 'headers'})}}>Headers</a>
+          </li>
+        </ul>
+        {(()=>{
+          if(this.state.activeTab === 'body') {
+            return (<Body response={response} />);
+          } else if (this.state.activeTab === 'headers') {
+            return (<Headers headers={response.response_headers} />);
+          } else {
+            return <div />;
+          }
+        })()}
       </div>
-      <div className="row">
-        <HTTPStatus value={response.response_code} />
-      </div>
-      <div className="row">
-        <List list={requestHeaders} heading="Headers" />
-      </div>
-      <div className="row">
-        <List list={requestParams} heading="Parameters" />
-      </div>
-      <h3 className="text-center"> Response</h3>
-      <div className="row">
-        <Headers headers={response.response_headers} />
-      </div>
-      <div className="row">
-        <Body response={response} />
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 const NotFound = () => {
@@ -99,11 +121,10 @@ const ServerError = () => {
 
 const Styles = {
   parsedJson: { backgroundColor: 'initial' },
-  parsedResponseContainer: { paddingLeft: '40px' },
 };
 
 const HTTPMethod = ({ value, url }) => {
-  return <h3>{value} {url}</h3>;
+  return <h4><small>{value}</small><br/>{url}</h4>;
 };
 
 const HTTPStatus = ({ value }) => {
@@ -112,25 +133,17 @@ const HTTPStatus = ({ value }) => {
 
 const Headers = ({ headers }) => {
   return (
-    <div>
-      <h5>Headers:</h5>
-      <ul>
-        {_.map(headers, (value, key) => {
-          return <ListItemPair key={key} listKey={key} listValue={value} />;
-        })}
-      </ul>
-    </div>
+    <ul className="api-res__headers">
+      {_.map(headers, (value, key) => {
+        return <ListItemPair key={key} listKey={key} listValue={value} />;
+      })}
+    </ul>
   );
 };
 
 const Body = (props) => {
   return (
-    <div>
-      <h5>Body:</h5>
-      <div style={Styles.parsedResponseContainer}>
-        <ParsedResponse {...props} />
-      </div>
-    </div>
+    <ParsedResponse {...props} />
   );
 };
 
@@ -183,7 +196,7 @@ class ParsedJSONResponse extends React.Component {
     let rawJson = JSON.stringify(this.jsonData());
     return (
       <div ref="jsonResponse">
-        <a className="btn pull-right" onClick={this.toggleParsedJSON}>
+        <a className="btn" onClick={this.toggleParsedJSON}>
           { this.state.showFormattedJson ? "View raw" : "View formatted" }
         </a>
         <pre style={Styles.parsedJSON}>
