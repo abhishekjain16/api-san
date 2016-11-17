@@ -1,0 +1,80 @@
+//colors
+$color_suva_gray_approx: #888;
+$color_dark_blue_approx: #1a01cc;
+$color_red_berry_approx: #800;
+
+//fonts
+$font_0: monospace;
+
+//urls
+$url_0: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAD1JREFUeNpiYGBgOADE%2F3Hgw0DM4IRHgSsDFOzFInmMAQnY49ONzZRjDFiADT7dMLALiE8y4AGW6LoBAgwAuIkf%2F%2FB7O9sAAAAASUVORK5CYII%3D);
+
+.json-view {
+    position: relative;
+    font-family: $font_0;
+    .collapser {
+        width: 20px;
+        height: 18px;
+        display: block;
+        position: absolute;
+        left: -1.7em;
+        top: -.2em;
+        z-index: 5;
+        background-image: $url_0;
+        background-repeat: no-repeat;
+        background-position: center center;
+        opacity: .5;
+        cursor: pointer;
+    }
+    .collapsed {
+        //Instead of the line below you could use @include transform($scale, $rotate, $transx, $transy, $skewx, $skewy, $originx, $originy)
+        transform: rotate(-90deg);
+    }
+    .bl {
+        display: block;
+        padding-left: 20px;
+        margin-left: -20px;
+        position: relative;
+    }
+    ul {
+        list-style-type: none;
+        padding-left: 2em;
+        border-left: 1px dotted;
+        margin: .3em;
+        li {
+            position: relative;
+        }
+    }
+    .comments {
+        display: none;
+        //Instead of the line below you could use @include user-select($select)
+        user-select: none;
+        padding-left: .8em;
+        font-style: italic;
+        color: $color_suva_gray_approx;
+    }
+    .dots {
+        display: none;
+        //Instead of the line below you could use @include user-select($select)
+        user-select: none;
+    }
+    .bool {
+        font-weight: 700;
+        color: $color_dark_blue_approx;
+    }
+    .null {
+        font-weight: 700;
+        color: $color_dark_blue_approx;
+    }
+    .num {
+        font-weight: 700;
+        color: $color_dark_blue_approx;
+    }
+    .undef {
+        font-weight: 700;
+        color: $color_dark_blue_approx;
+    }
+    .str {
+        color: $color_red_berry_approx;
+    }
+}

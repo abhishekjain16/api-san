@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router';
 import _ from 'underscore';
+import ReactDOM from 'react-dom';
 
 class ApiResponse extends React.Component {
   constructor(props) {
@@ -142,14 +143,55 @@ const ParsedResponse = ({ response }) => {
   }
 };
 
-const ParsedJSONResponse = ({ body }) => {
-  let formattedJson = JSON.stringify(JSON.parse(body), null, 2);
-  formattedJson = `${formattedJson}`;
-  return (
-    <pre style={Styles.parsedJson}>
-      {formattedJson}
-    </pre>
-  );
+class ParsedJSONResponse extends React.Component {
+  constructor() {
+    super();
+    this.toggleParsedJSON = this.toggleParsedJSON.bind(this);
+    this.formatJsonView = this.formatJsonView.bind(this);
+    this.jsonData = this.jsonData.bind(this);
+    this.state = {
+      showFormattedJson: true,
+    }
+  }
+
+  toggleParsedJSON(event) {
+    event.preventDefault();
+    this.setState({
+      showFormattedJson: !this.state.showFormattedJson
+    });
+    return false;
+  }
+
+  formatJsonView() {
+    $(this.refs.formattedJSON).jsonView(this.jsonData(), { collapsed: true });
+  }
+
+  jsonData() {
+    return JSON.parse(this.props.body);
+  }
+
+  componentDidMount() {
+    this.formatJsonView();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    this.formatJsonView();
+    ReactDOM.findDOMNode(this.refs.jsonResponse).scrollIntoView();
+  }
+
+  render() {
+    let rawJson = JSON.stringify(this.jsonData());
+    return (
+      <div ref="jsonResponse">
+        <a className="btn pull-right" onClick={this.toggleParsedJSON}>
+          { this.state.showFormattedJson ? "View raw" : "View formatted" }
+        </a>
+        <pre style={Styles.parsedJSON}>
+          { this.state.showFormattedJson ? <div ref="formattedJSON"></div> : rawJson }
+        </pre>
+      </div>
+    );
+  }
 };
 
 const List = ({ list, heading }) => {
