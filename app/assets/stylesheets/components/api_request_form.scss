@@ -1,0 +1,26 @@
+.api-req-form__container {
+  padding: 50px 0;
+
+  .bootstrap-center-form {
+    text-align: left;
+  }
+}
+
+.api-req-form__title {
+  margin-bottom: 20px;
+}
+
+.api-req-form__auth-check {
+  margin-right: 5px !important;
+}
+
+.api-req-form__auth-form {
+  height: 50px;
+
+  .checkbox { line-height: 34px }
+  .form-group { margin: 0 5px; }
+}
+
+.api-req-form__param-links {
+  margin-bottom: 20px;
+}

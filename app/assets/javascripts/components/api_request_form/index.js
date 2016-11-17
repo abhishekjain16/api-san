@@ -151,62 +151,55 @@ class ApiRequestForm extends React.Component {
       return <RequestHeaderInput key={header.id} removeHeader={removeHeader} handleHeaderChange={handleHeaderChange} header={header} />;
     });
     return (
-      <div className="row">
-        <div className="col-sm-6 col-sm-offset-3">
-          <div className="row form-controls text-center">
-            <form onSubmit={event => this.handleSubmit(event)} className="bootstrap-center-form">
-
-              <div className="form-group">
-                <div className="row">
-                  <div className="col-sm-3">
-                    <SelectForMethods handleChange={event => this.handleChange(event)} defaultMethod={this.state.method} />
-                    <Error messages={this.state.errors.method} />
-                  </div>
-                  <div className="col-sm-9">
-                    <input value={this.state.url} type="text" className="form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
-                    <Error messages={this.state.errors.url} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-group">
-                <div className="checkbox">
-                  <label htmlFor="authentication"><input type="checkbox" checked={this.state.showAuthentication} onChange={event => this.handleCheckboxChange(event)} />Basic Authentication</label>
-                </div>
-                <Authentication username={this.state.username} password={this.state.password} showAuthentication={this.state.showAuthentication} handleChange={event => this.handleChange(event)} />
-              </div>
-
-              <div className="form-group">
-                <div className="row form-controls">
+      <div className="container api-req-form__container">
+        <div className="row">
+          <div className="col-sm-6">
+            <div className="row form-controls text-center">
+              <form onSubmit={event => this.handleSubmit(event)} className="bootstrap-center-form">
+                <h1 className="api-req-form__title">Request Form</h1>
+                <div className="form-group">
                   <div className="row">
-                    <AddHeaderLink addHeader={event => this.addHeader(event)} />
+                    <div className="col-sm-3">
+                      <SelectForMethods handleChange={event => this.handleChange(event)} defaultMethod={this.state.method} />
+                      <Error messages={this.state.errors.method} />
+                    </div>
+                    <div className="col-sm-7">
+                      <input value={this.state.url} type="text" className="form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
+                      <Error messages={this.state.errors.url} />
+                    </div>
+                    <button type="submit" className="btn btn-primary col-sm-2" disabled={!this.state.loaded}>
+                      Launch
+                    </button>
                   </div>
-                  <div className="row form-controls">
+                </div>
+                <Loader loaded={this.state.loaded} zIndex={2e9} />
+                <div className="form-inline api-req-form__auth-form">
+                  <div className="form-group checkbox">
+                    <label htmlFor="authentication"><input type="checkbox" className="api-req-form__auth-check" checked={this.state.showAuthentication} onChange={event => this.handleCheckboxChange(event)} />Basic Authentication</label>
+                  </div>
+                  <Authentication username={this.state.username} password={this.state.password} showAuthentication={this.state.showAuthentication} handleChange={event => this.handleChange(event)} />
+                </div>
+
+                <div className="form-group">
+                  <AddHeaderLink addHeader={event => this.addHeader(event)} />
+                  <div className="row">
                     {headers}
                   </div>
                 </div>
-              </div>
 
-              <div className="form-group">
-                <div className="row form-controls">
-                  <div className="row">
+                <div className="form-group">
+                  <div className="api-req-form__param-links">
                     <AddParamLink addParam={event => this.addParam(event)} />
                     OR
                     <AddRequestBody addBody={event => this.addBody(event)} />
                   </div>
-                  <div className="row form-controls">
+                  <div>
                     {params}
                     <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} value={this.state.request_body} />
                   </div>
                 </div>
-              </div>
-
-              <div className="form-buttons text-center row">
-                <Loader loaded={this.state.loaded} zIndex={2e9} />
-                <button type="submit" className="btn btn-primary btn-block" disabled={!this.state.loaded}>Launch Request</button>
-              </div>
-
-            </form>
+              </form>
+            </div>
           </div>
         </div>
       </div>
@@ -214,17 +207,16 @@ class ApiRequestForm extends React.Component {
   }
 }
 
-
 const AddParamLink = ({ addParam }) => {
-  return <a href="" onClick={event => addParam(event)} className="devise-links"> (+) Add Parameter(s) </a>;
+  return <a href="" onClick={event => addParam(event)} className="devise-links"> Add Parameter(s) </a>;
 };
 
 const AddHeaderLink = ({ addHeader }) => {
-  return <a href="" onClick={event => addHeader(event)} className="devise-links"> (+) Add Header(s) </a>;
+  return <a href="" onClick={event => addHeader(event)} className="devise-links"> Add Header(s) </a>;
 };
 
 const AddRequestBody = ({ addBody }) => {
-  return <a href="" onClick={event => addBody(event)} className="devise-links"> (+) Add Body</a>;
+  return <a href="" onClick={event => addBody(event)} className="devise-links"> Add Body</a>;
 };
 
 const RequestBody = ({ showRequestBody, handleChange, value }) => {
@@ -302,11 +294,11 @@ const SelectForMethods = ({ handleChange, defaultMethod }) => {
 const Authentication = ({ showAuthentication, handleChange, username, password }) => {
   if (showAuthentication) {
     return (
-      <div className="row">
-        <div className="col-sm-6">
+      <div className="form-group">
+        <div className="form-group">
           <input type="text" value={username} className="form-control" name="username" placeholder="Enter username" onChange={handleChange} />
         </div>
-        <div className="col-sm-6">
+        <div className="form-group">
           <input type="text" value={password} className="form-control" name="password" placeholder="Enter password" onChange={handleChange} />
         </div>
       </div>
