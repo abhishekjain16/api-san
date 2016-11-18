@@ -118,3 +118,12 @@ group :test do
   gem 'simplecov', require: false
 
 end
+
+gem 'boxy-cap', github: 'bigbinary/boxy-cap'
+gem 'capistrano'
+gem 'capistrano-rbenv'
+gem 'capistrano-rails', github: 'capistrano/rails'
+gem 'capistrano-bundler'
+gem 'capistrano-npm'
+gem 'sshkit'
+gem 'unicorn'
