@@ -20,10 +20,12 @@ class RequestService
     if valid?
       begin
         @response = RestClient::Request.execute(options)
+        self.api_response = save_api_response
       rescue RestClient::ExceptionWithResponse => e
         @response = e.response
+      rescue URI::InvalidURIError
+        errors.add(:url, 'Invalid Url')
       end
-      self.api_response = save_api_response
     end
   end
 
@@ -53,7 +55,7 @@ class RequestService
 
   def response_body
     {
-      body: response.body
+      body: response.body.force_encoding(Encoding::UTF_8)
     }
   end
 
