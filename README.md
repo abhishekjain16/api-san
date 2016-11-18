@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/bigbinary/apisanity/tree/master.svg?style=svg&circle-token=bf02c79488ee7343d9f7e7c43f93825d5584cc65)](https://circleci.com/gh/bigbinary/apisanity/tree/master)
+[![CircleCI](https://circleci.com/gh/bigbinary/apisanity.svg?style=svg&circle-token=6fc6afcefa3fb1ba7241b6095df210fef01205ea)](https://circleci.com/gh/bigbinary/apisanity)
 
 #### Setup
 
