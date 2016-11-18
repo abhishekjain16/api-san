@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import _ from 'underscore';
 import ReactDOM from 'react-dom';
 import ApiRequestForm from '../api_request_form';
+import moment from 'moment';
 
 class HashData {
   static parse(data) {
@@ -102,7 +103,7 @@ class ApiResponseView extends React.Component {
         <div className="api-res-form__response">
           <h3>Response</h3>
           <HTTPStatus value={response.response_code} />
-          <p><span className="api-res-form__label">Date:</span> {new Date().toString()}</p>
+          <p><span className="api-res-form__label">Date:</span> {moment().format('llll')}</p>
           <ul className="nav nav-tabs api-res__req-tabs">
             <li className={this.state.activeTab === 'body' ? 'active' : ''}>
               <a onClick={()=>{this.setState({activeTab: 'body'})}}>Body</a>
