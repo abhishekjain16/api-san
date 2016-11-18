@@ -6,6 +6,7 @@
 bundle install
 cp config/database.yml.postgresqlapp config/database.yml
 rake setup
+npm install
 bundle exec rails server
 ```
 
@@ -26,4 +27,15 @@ $ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-nodejs.git
 $ heroku buildpacks:add https://github.com/heroku/heroku-buildpack-ruby.git
 ```
  
+#### Steps to take care before merging to master.
+
+- Install Heroku Repo Plugin from [here](https://github.com/heroku/heroku-repo#installation)
+- Run `heroku repo:purge_cache -a apisanity`
+- Merge to master.
+
+This would help in deploying to master when PR is merged without any hassle.
+
+- If PR is merged and deployment failed, run `heroku repo:purge_cache -a apisanity`
+and then deploy master again via [Dashboard on Heroku](https://dashboard.heroku.com/apps/apisanity/deploy/github)
+using manual deploy.
 
