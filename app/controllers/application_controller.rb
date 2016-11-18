@@ -6,7 +6,13 @@ class ApplicationController < ActionController::Base
 
   before_action :set_layout_carrier
 
+  force_ssl if: :ssl_configured?
+
   private
+
+  def ssl_configured?
+    !Rails.env.development?
+  end
 
   def set_layout_carrier
     @layout_carrier = LayoutCarrier.new
