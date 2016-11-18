@@ -1,0 +1,69 @@
+.api-req-form__container {
+  padding: 0;
+  border-bottom: 1px dashed #ccc;
+
+  .bootstrap-center-form {
+    text-align: left;
+    box-shadow: none;
+    margin-bottom: 0;
+  }
+}
+
+.api-req-form__title {
+  margin-bottom: 20px;
+}
+
+.api-req-form__auth-check {
+  margin-right: 5px !important;
+}
+
+.api-req-form__auth-form {
+  height: 50px;
+  margin-top: 15px;
+
+  .checkbox { line-height: 34px }
+  .form-group { margin: 0 5px; }
+}
+
+.api-req-form__form {
+  border: none;
+}
+
+.api-req-form__send-icon {
+  color: #fff;
+  margin-right: 10px;
+}
+
+.api-req-form__url-group {
+  display: flex;
+}
+
+.api-req-form__url-control {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.api-req-form__remove-icon {
+  font-size: 16px;
+}
+
+.api-req-form__input {
+  width: 250px;
+  margin-right: 20px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.api-res-form__label {
+  color: gray;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+.api-res-form__response {
+  padding: 0 10px;
+}
+
+.api-req-form__textarea {
+  margin-top: 15px;
+}

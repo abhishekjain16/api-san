@@ -15,7 +15,7 @@
     / <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
   %body
     .navbar.navbar-default.navbar-static-top{role: "navigation"}
-      .container
+      .container-fluid
         .navbar-header
           %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", :type => "button"}
             %span.sr-only Toggle navigation
@@ -23,9 +23,8 @@
             %span.icon-bar
             %span.icon-bar
           %a.navbar-brand{href: "/"} Apisanity
-    .container.page
+    .container-fluid.page
       .row
-        .col-sm-12
-          = render 'shared/bootstrap_flash'
-          #react-container
-            = yield
+        = render 'shared/bootstrap_flash'
+        #react-container
+          = yield

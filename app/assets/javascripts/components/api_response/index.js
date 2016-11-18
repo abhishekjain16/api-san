@@ -2,6 +2,23 @@ import React from 'react';
 import { Link } from 'react-router';
 import _ from 'underscore';
 import ReactDOM from 'react-dom';
+import ApiRequestForm from '../api_request_form';
+
+class HashData {
+  static parse(data) {
+    const keys = Object.keys(data);
+
+    const finalData = keys.map((key) => {
+      const hash = {};
+      hash.key = key;
+      hash.value = data[key];
+      hash.id = uuid.v1();
+      return hash;
+    });
+
+    return finalData;
+  }
+}
 
 class ApiResponse extends React.Component {
   constructor(props) {
@@ -15,6 +32,7 @@ class ApiResponse extends React.Component {
       requestHeaders: [],
       notFound: false,
       serverError: false,
+      activeTab: 'body'
     };
   }
 
@@ -26,7 +44,18 @@ class ApiResponse extends React.Component {
     $.ajax({
       url: url, context: this, dataType: 'json', type: 'GET'
     }).done(function (data) {
+      let requestData = {
+        url: data.url,
+        method: data.httpMethod,
+        request_body: data.requestBody,
+        username: data.username,
+        password: data.password,
+        showAuthentication: (data.username && data.username.length > 0 && data.password && data.password.length > 0 && true),
+        request_params: HashData.parse(data.requestParams),
+        request_headers: HashData.parse(data.requestHeaders)
+      };
       this.setState(data);
+      this.setState({requestData: requestData});
     }).fail(function (data) {
       if (data.status == 404) {
         this.setState({notFound: true})
@@ -48,6 +77,7 @@ class ApiResponse extends React.Component {
           httpMethod={this.state.httpMethod}
           url={this.state.url}
           response={this.state.response}
+          requestData={this.state.requestData}
           requestHeaders={this.state.requestHeaders}
           requestParams={this.state.requestParams}
           token={this.props.params.token} />
@@ -56,32 +86,44 @@ class ApiResponse extends React.Component {
   }
 }
 
-const ApiResponseView = ({ httpMethod, url, response, requestHeaders, requestParams, token }) => {
-  return (
-    <div>
-      <h3 className="text-center"> Request</h3>
-      <Link className="btn btn-primary pull-right" to={`/api_responses/${token}/edit`}>Edit</Link>
-      <div className="row">
-        <HTTPMethod value={httpMethod} url={url} />
+class ApiResponseView extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      activeTab: 'body'
+    };
+  }
+
+  render () {
+    let { httpMethod, url, response, requestHeaders, requestParams, token, requestData } = this.props;
+    return (
+      <div>
+        <ApiRequestForm {...requestData} />
+        <div className="api-res-form__response">
+          <h3>Response</h3>
+          <HTTPStatus value={response.response_code} />
+          <p><span className="api-res-form__label">Date:</span> {new Date().toString()}</p>
+          <ul className="nav nav-tabs api-res__req-tabs">
+            <li className={this.state.activeTab === 'body' ? 'active' : ''}>
+              <a onClick={()=>{this.setState({activeTab: 'body'})}}>Body</a>
+            </li>
+            <li className={this.state.activeTab === 'headers' ? 'active' : ''}>
+              <a onClick={()=>{this.setState({activeTab: 'headers'})}}>Headers</a>
+            </li>
+          </ul>
+          {(()=>{
+            if(this.state.activeTab === 'body') {
+              return (<Body response={response} />);
+            } else if (this.state.activeTab === 'headers') {
+              return (<Headers headers={response.response_headers} />);
+            } else {
+              return <div />;
+            }
+          })()}
+        </div>
       </div>
-      <div className="row">
-        <HTTPStatus value={response.response_code} />
-      </div>
-      <div className="row">
-        <List list={requestHeaders} heading="Headers" />
-      </div>
-      <div className="row">
-        <List list={requestParams} heading="Parameters" />
-      </div>
-      <h3 className="text-center"> Response</h3>
-      <div className="row">
-        <Headers headers={response.response_headers} />
-      </div>
-      <div className="row">
-        <Body response={response} />
-      </div>
-    </div>
-  );
+    );
+  }
 };
 
 const NotFound = () => {
@@ -99,38 +141,29 @@ const ServerError = () => {
 
 const Styles = {
   parsedJson: { backgroundColor: 'initial' },
-  parsedResponseContainer: { paddingLeft: '40px' },
 };
 
 const HTTPMethod = ({ value, url }) => {
-  return <h3>{value} {url}</h3>;
+  return <h4><small>{value}</small><br/>{url}</h4>;
 };
 
 const HTTPStatus = ({ value }) => {
-  return <p> Status: {value} </p>;
+  return <p> <span className="api-res-form__label">Status:</span> {value} </p>;
 };
 
 const Headers = ({ headers }) => {
   return (
-    <div>
-      <h5>Headers:</h5>
-      <ul>
-        {_.map(headers, (value, key) => {
-          return <ListItemPair key={key} listKey={key} listValue={value} />;
-        })}
-      </ul>
-    </div>
+    <ul className="api-res__headers">
+      {_.map(headers, (value, key) => {
+        return <ListItemPair key={key} listKey={key} listValue={value} />;
+      })}
+    </ul>
   );
 };
 
 const Body = (props) => {
   return (
-    <div>
-      <h5>Body:</h5>
-      <div style={Styles.parsedResponseContainer}>
-        <ParsedResponse {...props} />
-      </div>
-    </div>
+    <ParsedResponse {...props} />
   );
 };
 
@@ -183,7 +216,7 @@ class ParsedJSONResponse extends React.Component {
     let rawJson = JSON.stringify(this.jsonData());
     return (
       <div ref="jsonResponse">
-        <a className="btn pull-right" onClick={this.toggleParsedJSON}>
+        <a className="btn" onClick={this.toggleParsedJSON}>
           { this.state.showFormattedJson ? "View raw" : "View formatted" }
         </a>
         <pre style={Styles.parsedJSON}>
