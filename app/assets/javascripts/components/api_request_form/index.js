@@ -199,6 +199,7 @@ class ApiRequestForm extends React.Component {
               SEND
             </button>
           </form>
+          <Error messages={this.state.errors.base} />
         </div>
         <Loader loaded={this.state.loaded} zIndex={2e9} />
       </div>

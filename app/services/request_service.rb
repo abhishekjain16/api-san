@@ -24,7 +24,9 @@ class RequestService
       rescue RestClient::ExceptionWithResponse => e
         @response = e.response
       rescue URI::InvalidURIError
-        errors.add(:url, 'Invalid Url')
+        errors.add(:url, 'Invalid URL')
+      rescue SocketError => e
+        errors.add(:url, 'Invalid URL or Domain')
       end
     end
   end
