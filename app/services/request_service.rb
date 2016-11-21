@@ -55,7 +55,7 @@ class RequestService
 
   def response_body
     {
-      body: response.body.force_encoding(Encoding::UTF_8)
+      body: response.body.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
     }
   end
 
