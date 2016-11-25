@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router';
 import _ from 'underscore';
-import ReactDOM from 'react-dom';
-import ApiRequestForm from '../api_request_form';
 import moment from 'moment';
+import uuid from 'uuid';
+
+import ApiRequestForm from '../api_request_form';
+import ParsedJSONResponse from './parsed_json_response';
 
 class HashData {
   static parse(data) {
@@ -33,7 +35,7 @@ class ApiResponse extends React.Component {
       requestHeaders: [],
       notFound: false,
       serverError: false,
-      activeTab: 'body'
+      activeTab: 'body',
     };
   }
 
@@ -67,6 +69,10 @@ class ApiResponse extends React.Component {
     /*eslint-enable */
   }
 
+  changeActiveTab(activeTab) {
+    this.setState({ activeTab });
+  }
+
   render() {
     if (this.state.notFound) {
       return <NotFound />;
@@ -75,56 +81,43 @@ class ApiResponse extends React.Component {
     } else {
       return (
         <ApiResponseView
-          httpMethod={this.state.httpMethod}
-          url={this.state.url}
           response={this.state.response}
           requestData={this.state.requestData}
-          requestHeaders={this.state.requestHeaders}
-          requestParams={this.state.requestParams}
-          token={this.props.params.token} />
+          changeActiveTab={activeTab => this.changeActiveTab(activeTab)}
+          activeTab={this.state.activeTab} />
       );
     }
   }
 }
 
-class ApiResponseView extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      activeTab: 'body'
-    };
-  }
-
-  render () {
-    let { httpMethod, url, response, requestHeaders, requestParams, token, requestData } = this.props;
-    return (
-      <div>
-        <ApiRequestForm {...requestData} />
-        <div className="api-res-form__response">
-          <h3>Response</h3>
-          <HTTPStatus value={response.response_code} />
-          <p><span className="api-res-form__label">Date:</span> {moment().format('llll')}</p>
-          <ul className="nav nav-tabs api-res__req-tabs">
-            <li className={this.state.activeTab === 'body' ? 'active' : ''}>
-              <a onClick={()=>{this.setState({activeTab: 'body'})}}>Body</a>
-            </li>
-            <li className={this.state.activeTab === 'headers' ? 'active' : ''}>
-              <a onClick={()=>{this.setState({activeTab: 'headers'})}}>Headers</a>
-            </li>
-          </ul>
-          {(()=>{
-            if(this.state.activeTab === 'body') {
-              return (<Body response={response} />);
-            } else if (this.state.activeTab === 'headers') {
-              return (<Headers headers={response.response_headers} />);
-            } else {
-              return <div />;
-            }
-          })()}
-        </div>
+const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) => {
+  return (
+    <div>
+      <ApiRequestForm {...requestData} />
+      <div className="api-res-form__response">
+        <h3>Response</h3>
+        <HTTPStatus value={response.response_code} />
+        <p><span className="api-res-form__label">Date:</span> {moment().format('llll')}</p>
+        <ul className="nav nav-tabs api-res__req-tabs">
+          <li className={activeTab === 'body' ? 'active' : ''}>
+            <Link onClick={() => { changeActiveTab('body'); }}>Body</Link>
+          </li>
+          <li className={activeTab === 'headers' ? 'active' : ''}>
+            <Link onClick={() => { changeActiveTab('headers'); }}>Headers</Link>
+          </li>
+        </ul>
+        {(() => {
+          if (activeTab === 'body') {
+            return (<Body response={response} />);
+          } else if (activeTab === 'headers') {
+            return (<Headers headers={response.response_headers} />);
+          } else {
+            return <div />;
+          }
+        })()}
       </div>
-    );
-  }
+    </div>
+  );
 };
 
 const NotFound = () => {
@@ -137,15 +130,6 @@ const ServerError = () => {
   return (
     <h2 className="text-center">Something went wrong. Please try again later</h2>
   );
-};
-
-
-const Styles = {
-  parsedJson: { backgroundColor: 'initial' },
-};
-
-const HTTPMethod = ({ value, url }) => {
-  return <h4><small>{value}</small><br/>{url}</h4>;
 };
 
 const HTTPStatus = ({ value }) => {
@@ -174,74 +158,6 @@ const ParsedResponse = ({ response }) => {
     return <ParsedJSONResponse body={response.response_body} />;
   } else {
     return <div>Response not in JSON</div>;
-  }
-};
-
-class ParsedJSONResponse extends React.Component {
-  constructor() {
-    super();
-    this.toggleParsedJSON = this.toggleParsedJSON.bind(this);
-    this.formatJsonView = this.formatJsonView.bind(this);
-    this.jsonData = this.jsonData.bind(this);
-    this.state = {
-      showFormattedJson: true,
-    }
-  }
-
-  toggleParsedJSON(event) {
-    event.preventDefault();
-    this.setState({
-      showFormattedJson: !this.state.showFormattedJson
-    });
-    return false;
-  }
-
-  formatJsonView() {
-    $(this.refs.formattedJSON).jsonView(this.jsonData(), { collapsed: true });
-  }
-
-  jsonData() {
-    return JSON.parse(this.props.body);
-  }
-
-  componentDidMount() {
-    this.formatJsonView();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    this.formatJsonView();
-    ReactDOM.findDOMNode(this.refs.jsonResponse).scrollIntoView();
-  }
-
-  render() {
-    let rawJson = JSON.stringify(this.jsonData());
-    return (
-      <div ref="jsonResponse">
-        <a className="btn" onClick={this.toggleParsedJSON}>
-          { this.state.showFormattedJson ? "View raw" : "View formatted" }
-        </a>
-        <pre style={Styles.parsedJSON}>
-          { this.state.showFormattedJson ? <div ref="formattedJSON"></div> : rawJson }
-        </pre>
-      </div>
-    );
-  }
-};
-
-const List = ({ list, heading }) => {
-  if (_.isEmpty(list)) {
-    return <div />;
-  } else {
-    return (
-      <div>
-        <h5>{heading}:</h5>
-        <ul>
-          {_.map(list, (value, key) => {
-            return <ListItemPair key={key} listKey={key} listValue={value} />;
-          })}
-        </ul>
-      </div>
-    );
   }
 };
 

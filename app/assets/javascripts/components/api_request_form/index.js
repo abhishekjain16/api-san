@@ -25,7 +25,7 @@ class ApiRequestForm extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps !== this.props) {
+    if (nextProps !== this.props) {
       this.setState(nextProps);
       return true;
     }
@@ -195,7 +195,7 @@ class ApiRequestForm extends React.Component {
               </div>
             </div>
             <button type="submit" className="btn btn-primary" disabled={!this.state.loaded}>
-              <i className="fa fa-paper-plane-o api-req-form__send-icon"/>
+              <i className="fa fa-paper-plane-o api-req-form__send-icon" />
               SEND
             </button>
           </form>

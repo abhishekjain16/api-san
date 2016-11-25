@@ -3,7 +3,9 @@ machine:
 
   timezone:
     America/New_York # List of timezones http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-
+  #Version of node
+  node:
+    version: 5.0.0
   # Version of ruby to use
   ruby:
     version:
