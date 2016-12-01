@@ -55,7 +55,8 @@ class ApiResponse extends React.Component {
         password: data.password,
         showAuthentication: (data.username && data.username.length > 0 && data.password && data.password.length > 0 && true),
         request_params: HashData.parse(data.requestParams),
-        request_headers: HashData.parse(data.requestHeaders)
+        request_headers: HashData.parse(data.requestHeaders),
+        headers: HashData.parse(data.requestHeaders)
       };
       this.setState(data);
       this.setState({requestData: requestData});

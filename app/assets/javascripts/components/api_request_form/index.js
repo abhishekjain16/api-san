@@ -8,7 +8,6 @@ import Loader from 'react-loader';
 class ApiRequestForm extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       url: this.props.url || '',
       method: this.props.method || 'get',
@@ -191,7 +190,7 @@ class ApiRequestForm extends React.Component {
               </div>
               <div>
                 {params}
-                <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} value={this.state.request_body} />
+                <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} value={this.state.request_body || ''} />
               </div>
             </div>
             <button type="submit" className="btn btn-primary" disabled={!this.state.loaded}>
