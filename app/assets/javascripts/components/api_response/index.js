@@ -40,7 +40,20 @@ class ApiResponse extends React.Component {
   }
 
   componentWillMount() {
-    const token = this.props.params.token;
+    this.fetchResponseData();
+    /*eslint-enable */
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.params.token != this.props.params.token) {
+      this.fetchResponseData(nextProps.params.token);
+      return false;
+    }
+    return true;
+  }
+
+  fetchResponseData(newToken) {
+    const token = newToken || this.props.params.token;
     const url = `/api_responses/${token}`;
 
     /*eslint-disable */
@@ -67,7 +80,6 @@ class ApiResponse extends React.Component {
         this.setState({serverError: true})
       }
     });
-    /*eslint-enable */
   }
 
   changeActiveTab(activeTab) {
@@ -85,13 +97,14 @@ class ApiResponse extends React.Component {
           response={this.state.response}
           requestData={this.state.requestData}
           changeActiveTab={activeTab => this.changeActiveTab(activeTab)}
-          activeTab={this.state.activeTab} />
+          activeTab={this.state.activeTab}
+          onRequestChange={this.onRequestChange} />
       );
     }
   }
 }
 
-const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) => {
+const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab, onRequestChange }) => {
   return (
     <div>
       <ApiRequestForm {...requestData} />

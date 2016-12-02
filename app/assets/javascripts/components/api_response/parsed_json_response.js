@@ -33,7 +33,7 @@ class ParsedJSONResponse extends React.Component {
     const formattedJSON = this.formattedJSON;
     /*eslint-disable */
     $(formattedJSON).html('');
-    $(formattedJSON).jsonView(this.jsonData(), { collapsed: true });
+    $(formattedJSON).jsonView(this.jsonData(), { collapsed: true, nl2br: true });
     /*eslint-enable */
   }
 
@@ -48,7 +48,7 @@ class ParsedJSONResponse extends React.Component {
         <Link className="btn" onClick={this.toggleParsedJSON}>
           { this.state.showFormattedJson ? 'View raw' : 'View formatted' }
         </Link>
-        <pre style={Styles.parsedJSON}>
+        <pre className="api-res__res" style={Styles.parsedJSON}>
           { this.state.showFormattedJson ? <div ref={(node) => { this.formattedJSON = node; }} /> : rawJson }
         </pre>
       </div>
