@@ -41,11 +41,10 @@ class ApiResponse extends React.Component {
 
   componentWillMount() {
     this.fetchResponseData();
-    /*eslint-enable */
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.params.token != this.props.params.token) {
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.params.token !== this.props.params.token) {
       this.fetchResponseData(nextProps.params.token);
       return false;
     }
