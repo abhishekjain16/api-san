@@ -97,14 +97,13 @@ class ApiResponse extends React.Component {
           response={this.state.response}
           requestData={this.state.requestData}
           changeActiveTab={activeTab => this.changeActiveTab(activeTab)}
-          activeTab={this.state.activeTab}
-          onRequestChange={this.onRequestChange} />
+          activeTab={this.state.activeTab} />
       );
     }
   }
 }
 
-const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab, onRequestChange }) => {
+const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) => {
   return (
     <div>
       <ApiRequestForm {...requestData} />
