@@ -4,6 +4,7 @@ import update from 'react-addons-update';
 import _ from 'underscore';
 import { hashHistory } from 'react-router';
 import Loader from 'react-loader';
+import ReactDOM from 'react-dom';
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
@@ -28,6 +29,11 @@ class ApiRequestForm extends React.Component {
       this.setState(nextProps);
       return true;
     }
+  }
+
+  componentDidMount() {
+    window.x = this.refs.urlInput;
+    ReactDOM.findDOMNode(this.refs.urlInput).focus();
   }
 
   addParam(event) {
@@ -166,7 +172,7 @@ class ApiRequestForm extends React.Component {
                   <Error messages={this.state.errors.method} />
                 </div>
                 <div className="api-req-form__url-control">
-                  <input value={this.state.url} type="text" className="input form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
+                  <input ref="urlInput" value={this.state.url} type="text" className="input form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
                   <Error messages={this.state.errors.url} />
                 </div>
             </div>
