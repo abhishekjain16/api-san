@@ -17,6 +17,7 @@ class ApiRequestForm extends React.Component {
       request_body: this.props.request_body || '',
       params: this.props.request_params || [],
       headers: this.props.request_headers || [],
+      assertions: this.props.assertions || [],
       showRequestBody: false,
       showAuthentication: this.props.showAuthentication || false,
       errors: {},
@@ -56,6 +57,12 @@ class ApiRequestForm extends React.Component {
     this.setState({ headers });
   }
 
+  addAssertion(event) {
+    event.preventDefault();
+    const assertions = this.state.assertions.concat({ id: uuid.v1(), kind: 'ResponseJSON', key: '', comparision: 'equals', value: '' });
+    this.setState({ assertions });
+  }
+
   removeParam(event, paramId) {
     event.preventDefault();
     const params = this.state.params.filter(element => element.id !== paramId);
@@ -66,6 +73,12 @@ class ApiRequestForm extends React.Component {
     event.preventDefault();
     const headers = this.state.headers.filter(element => element.id !== headerId);
     this.setState({ headers });
+  }
+
+  removeAssertion(event, assertionId) {
+    event.preventDefault();
+    const assertions = this.state.assertions.filter(element => element.id !== assertionId);
+    this.setState({ assertions });
   }
 
   handleCheckboxChange(event) {
@@ -90,6 +103,13 @@ class ApiRequestForm extends React.Component {
     header[event.target.dataset.type] = event.target.value;
 
     this.updateAndSet(this.state.headers, header, 'headers');
+  }
+
+  handleAssertionChange(event, id) {
+    const assertion = _.find(this.state.assertions, element => element.id === id);
+    assertion[event.target.dataset.type] = event.target.value;
+
+    this.updateAndSet(this.state.assertions, assertion, 'assertions');
   }
 
   updateAndSet(list, element, stateName) {
@@ -130,6 +150,8 @@ class ApiRequestForm extends React.Component {
       username: this.state.username,
       password: this.state.password,
       request_headers: this.requestHeaders(),
+      //TODO: add post request to accept and save assertions in request object
+      assertions: this.requestAssertions(),
     };
   }
 
@@ -138,6 +160,14 @@ class ApiRequestForm extends React.Component {
       return _.pick(element, 'key', 'value');
     });
     return headers;
+  }
+
+  requestAssertions() {
+    const assertions = this.state.assertions.map((element) => {
+      console.log(element);
+      return _.pick(element, 'kind', 'key', 'comparision', 'value');
+    });
+    return assertions;
   }
 
   requestParams() {
@@ -161,6 +191,11 @@ class ApiRequestForm extends React.Component {
       const removeHeader = event => this.removeHeader(event, header.id);
       const handleHeaderChange = event => this.handleHeaderChange(event, header.id);
       return <RequestHeaderInput key={header.id} removeHeader={removeHeader} handleHeaderChange={handleHeaderChange} header={header} />;
+    });
+    const assertions = this.state.assertions.map((assertion) => {
+      const removeAssertion = event => this.removeAssertion(event, assertion.id);
+      const handleAssertionChange = event => this.handleAssertionChange(event, assertion.id);
+      return <RequestAssertionInput key={assertion.id} removeAssertion={removeAssertion} handleAssertionChange={handleAssertionChange} assertion={assertion} />;
     });
     return (
       <div className="container-fluid api-req-form__container">
@@ -199,6 +234,12 @@ class ApiRequestForm extends React.Component {
                 <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} value={this.state.request_body || ''} />
               </div>
             </div>
+
+            <div className="form-group">
+              <AddAssertionLink addAssertion={event => this.addAssertion(event)} />
+              {assertions}
+            </div>
+
             <button type="submit" className="btn btn-primary" disabled={!this.state.loaded}>
               <i className="fa fa-paper-plane-o api-req-form__send-icon" />
               SEND
@@ -220,6 +261,10 @@ const AddHeaderLink = ({ addHeader }) => {
   return <a href="" onClick={event => addHeader(event)} className="devise-links"> Add Header </a>;
 };
 
+const AddAssertionLink = ({ addAssertion }) => {
+  return <a href="" onClick={event => addAssertion(event)} className="devise-links"> Add Assertion </a>;
+};
+
 const AddRequestBody = ({ addBody }) => {
   return <a href="" onClick={event => addBody(event)} className="devise-links"> Add Body</a>;
 };
@@ -234,7 +279,7 @@ const RequestBody = ({ showRequestBody, handleChange, value }) => {
 
 const RequestParameterInput = ({ removeParam, handleParamChange, param }) => {
   return (
-    <div className="form-inline">
+    <div className="api-req-form__form-inline form-inline">
       <KeyInput inputKeyName="request_parameters[][key]" handleKeyChange={handleParamChange} value={param.key} />
       <ValueInput inputValueName="request_parameters[][value]" handleValueChange={handleParamChange} value={param.value} />
       <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeParam}>
@@ -246,10 +291,24 @@ const RequestParameterInput = ({ removeParam, handleParamChange, param }) => {
 
 const RequestHeaderInput = ({ removeHeader, handleHeaderChange, header }) => {
   return (
-    <div className="form-inline">
+    <div className="api-req-form__form-inline form-inline">
       <KeyInput inputKeyName="request_headers[][key]" handleKeyChange={handleHeaderChange} value={header.key} />
       <ValueInput inputValueName="request_headers[][value]" handleValueChange={handleHeaderChange} value={header.value} />
       <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeHeader}>
+        <span />
+      </a>
+    </div>
+  );
+};
+
+const RequestAssertionInput = ({ removeAssertion, handleAssertionChange, assertion }) => {
+  return (
+    <div className="api-req-form__form-inline form-inline">
+      <AssertionKindInput inputKeyName="request_assertions[][kind]" handleKindChange={handleAssertionChange} value={assertion.kind } />
+      <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={assertion.key} />
+      <AssertionComparisionInput inputKeyName="request_assertions[][comarision]" handleComparisionChange={handleAssertionChange} value={assertion.comparision} />
+      <ValueInput inputValueName="request_assertions[][value]" handleValueChange={handleAssertionChange} value={assertion.value} />
+      <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeAssertion}>
         <span />
       </a>
     </div>
@@ -269,6 +328,26 @@ const KeyInput = ({ inputKeyName, handleKeyChange, value }) => {
     <input type="text" value={value} name={inputKeyName} className="input form-control api-req-form__input" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" />
   );
 };
+
+const AssertionKindInput = ({ inputKindName, handleKindChange, value }) => {
+  return (
+    <select name={inputKindName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleKindChange} data-type="kind">
+      <option>ResponseJSON</option>
+      <option>ResponseBody</option>
+    </select>
+    );
+}
+
+const AssertionComparisionInput = ({ inputComparisionName, handleComparisionChange, value }) => {
+  return (
+    <select name={inputComparisionName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleComparisionChange} data-type="comparision">
+      <option>equals</option>
+      <option>contains</option>
+      <option>greater than</option>
+      <option>lesser than</option>
+    </select>
+    );
+}
 
 const ValueInput = ({ inputValueName, handleValueChange, value }) => {
   return (
