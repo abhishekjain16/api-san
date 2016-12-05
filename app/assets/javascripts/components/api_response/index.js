@@ -40,7 +40,19 @@ class ApiResponse extends React.Component {
   }
 
   componentWillMount() {
-    const token = this.props.params.token;
+    this.fetchResponseData();
+  }
+
+  shouldComponentUpdate(nextProps) {
+    if (nextProps.params.token !== this.props.params.token) {
+      this.fetchResponseData(nextProps.params.token);
+      return false;
+    }
+    return true;
+  }
+
+  fetchResponseData(newToken) {
+    const token = newToken || this.props.params.token;
     const url = `/api_responses/${token}`;
 
     /*eslint-disable */
@@ -69,7 +81,6 @@ class ApiResponse extends React.Component {
         this.setState({serverError: true})
       }
     });
-    /*eslint-enable */
   }
 
   changeActiveTab(activeTab) {
