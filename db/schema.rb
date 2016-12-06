@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20161206082237) do
     t.string   "username"
     t.string   "password"
     t.text     "request_body"
+    t.hstore   "assertions",       default: {}
     t.index ["token"], name: "index_api_responses_on_token", unique: true, using: :btree
   end
 

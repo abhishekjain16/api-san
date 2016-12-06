@@ -31,6 +31,7 @@ class ApiResponse extends React.Component {
       response: { response_code: '', response_headers: {}, response_body: {} },
       url: '',
       httpMethod: '',
+      requestData: {},
       requestParams: [],
       requestHeaders: [],
       notFound: false,
@@ -111,11 +112,7 @@ const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) 
         <h3>Response</h3>
         <HTTPStatus value={response.response_code} />
         <p><span className="api-res-form__label">Date:</span> {moment().format('llll')}</p>
-        <span className="api-res-form__label">Assertions:</span>
-        <ul className="api-res-form__assertions">
-          <li className={'api-res-form__assertion--'+(true ? 'success' : 'fail')}><i className={true ? 'fa fa-check' : 'fa fa-times'}/><span>In ResponseJSON data[0].name equals 'bleh'</span></li>
-          <li  className={'api-res-form__assertion--'+(false ? 'success' : 'fail')}><i className={false ? 'fa fa-check' : 'fa fa-times'}/> <span>In ResponseJSON data[1].name equals 'booboo'</span></li>
-        </ul>
+        <AssertionView assertions={requestData.assertions} />
         <ul className="nav nav-tabs api-res__req-tabs">
           <li className={activeTab === 'body' ? 'active' : ''}>
             <Link onClick={() => { changeActiveTab('body'); }}>Body</Link>
@@ -186,5 +183,25 @@ const ListItemPair = ({ listKey, listValue }) => {
     </li>
   );
 };
+
+const AssertionView = ({ assertions }) => {
+  if (!assertions || !assertions.length) {
+    return <div/>
+  };
+  return (
+    <div>
+      <span className="api-res-form__label">Assertions:</span>
+      <ul className="api-res-form__assertions">
+        {
+          assertions.map((assertion, index) => {
+            return (
+              <li key={index} className={'api-res-form__assertion--'+(assertion.success ? 'success' : 'fail')}><i className={assertion.success ? 'fa fa-check' : 'fa fa-times'}/><span>{assertion.kind + ' ' + assertion.key + ' ' + assertion.comparison + ' ' + assertion.value}</span></li>
+              );
+          })
+        }
+      </ul>
+    </div>
+    );
+}
 
 export default ApiResponse;
