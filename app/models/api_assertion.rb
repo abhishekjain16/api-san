@@ -7,7 +7,7 @@ class ApiAssertion < ApplicationRecord
 
   def set_results
     response = JSON.parse(api_response.response_body)
-    self.api_value = response[key]
+    self.api_value = fetch_api_value(response)
     self.success = api_value ? assert_values : false
   rescue JSON::ParserError => e
     self.success = false
@@ -26,5 +26,12 @@ class ApiAssertion < ApplicationRecord
     else
       false
     end
+  end
+
+  def fetch_api_value(response)
+    keys = key.scan(/(\d+)|(\w+)/).map do |number, string|
+      number&.to_i || string
+    end
+    response.dig(*keys)
   end
 end
