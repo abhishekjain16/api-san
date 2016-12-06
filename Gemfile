@@ -119,11 +119,14 @@ group :test do
 
 end
 
-gem 'boxy-cap', github: 'bigbinary/boxy-cap'
-gem 'capistrano'
-gem 'capistrano-rbenv'
-gem 'capistrano-rails', github: 'capistrano/rails'
-gem 'capistrano-bundler'
-gem 'capistrano-npm'
-gem 'sshkit'
+group :deploy do
+  gem 'boxy-cap', github: 'bigbinary/boxy-cap'
+  gem 'capistrano'
+  gem 'capistrano-rbenv'
+  gem 'capistrano-rails', github: 'capistrano/rails'
+  gem 'capistrano-bundler'
+  gem 'capistrano-npm'
+  gem 'sshkit'
+end
+
 gem 'unicorn'
