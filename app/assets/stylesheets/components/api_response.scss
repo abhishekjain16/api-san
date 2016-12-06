@@ -10,3 +10,22 @@
 .api-res__req-tabs {
   margin-bottom: 10px;
 }
+
+.api-res-form__list {
+  display: inline-block;
+  vertical-align: top;
+  list-style: none;
+  padding-left: 10px;
+}
+
+.api-res-form__assertions {
+  display: inline-block;
+  vertical-align: top;
+  padding-left: 10px;
+  list-style: none;
+
+  i { margin-right: 5px; }
+}
+
+.api-res-form__assertion--success i { color: green; }
+.api-res-form__assertion--fail i { color: red; }

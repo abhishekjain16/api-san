@@ -70,6 +70,7 @@ class ApiResponsesControllerTest < ActionController::TestCase
       requestBody: '{"user[name]": "John"}',
       username: 'admin',
       password: 'password',
+      assertions: api_response.assertions,
       response: {
         response_headers: {"content_type": "application/json"},
         response_body: api_response.response['body'],
@@ -79,7 +80,6 @@ class ApiResponsesControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_equal expected_response, response.body
-
   end
 
   def test_show_invalid_page
