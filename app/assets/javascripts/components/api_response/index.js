@@ -69,8 +69,7 @@ class ApiResponse extends React.Component {
         request_params: HashData.parse(data.requestParams),
         request_headers: HashData.parse(data.requestHeaders),
         headers: HashData.parse(data.requestHeaders),
-        //TODO: add assertions to response
-        assertions: HashData.parse(data.assertions)
+        assertions: data.assertions,
       };
       this.setState(data);
       this.setState({requestData: requestData});
@@ -112,14 +111,11 @@ const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) 
         <h3>Response</h3>
         <HTTPStatus value={response.response_code} />
         <p><span className="api-res-form__label">Date:</span> {moment().format('llll')}</p>
-        <p>
-          <span className="api-res-form__label">Assertions:</span>
-          {/* TODO: wire assertion results here */}
-          <ul className="api-res-form__assertions">
-            <li className={'api-res-form__assertion--'+(true ? 'success' : 'fail')}><i className={true ? 'fa fa-check' : 'fa fa-times'}/><span>In ResponseJSON data[0].name equals 'bleh'</span></li>
-            <li  className={'api-res-form__assertion--'+(false ? 'success' : 'fail')}><i className={false ? 'fa fa-check' : 'fa fa-times'}/> <span>In ResponseJSON data[1].name equals 'booboo'</span></li>
-          </ul>
-        </p>
+        <span className="api-res-form__label">Assertions:</span>
+        <ul className="api-res-form__assertions">
+          <li className={'api-res-form__assertion--'+(true ? 'success' : 'fail')}><i className={true ? 'fa fa-check' : 'fa fa-times'}/><span>In ResponseJSON data[0].name equals 'bleh'</span></li>
+          <li  className={'api-res-form__assertion--'+(false ? 'success' : 'fail')}><i className={false ? 'fa fa-check' : 'fa fa-times'}/> <span>In ResponseJSON data[1].name equals 'booboo'</span></li>
+        </ul>
         <ul className="nav nav-tabs api-res__req-tabs">
           <li className={activeTab === 'body' ? 'active' : ''}>
             <Link onClick={() => { changeActiveTab('body'); }}>Body</Link>

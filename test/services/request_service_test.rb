@@ -17,6 +17,22 @@ class RequestServiceTest < ActiveSupport::TestCase
     assert_equal({}, api_response.response_headers)
   end
 
+  def test_calls_rest_client_execute_with_assertions
+    service = RequestService.new(url, 'get', {username: "username", password: "password", request_params: {}, request_headers: {}, assertions: api_assertions})
+    response = mock('RestClient::Response')
+    response.expects(:body).returns('Response')
+    response.expects(:headers).returns({})
+    response.expects(:code).returns(200)
+    RestClient::Request.expects(:execute).with(url: url, method: 'get', verify_ssl: false, user: "username", password: "password", :headers => {}, :payload => {}).returns(response)
+    service.process
+
+    api_response = ApiResponse.last
+    api_assertion = api_response.assertions.first
+
+    assert_equal 'id', api_assertion.key
+    assert_equal 'some_value', api_assertion.value
+  end
+
   def test_calls_rest_client_execute_with_post_and_request_params
     request_params = {"post[title]" => "My new post", "post[user_id]" => "18"}
     service = RequestService.new(url, 'post', {username: "username", password: "password", request_params: request_params, request_headers: {}})
@@ -68,6 +84,10 @@ class RequestServiceTest < ActiveSupport::TestCase
   end
 
   private
+
+  def api_assertions
+    { "0" => {key: "id", value: 'some_value', comparison: 'equal', kind: 'responseJSON'} }
+  end
 
   def url
     "http://www.example.com"

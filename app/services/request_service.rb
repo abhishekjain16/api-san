@@ -1,7 +1,7 @@
 class RequestService
   include ActiveModel::Validations
 
-  attr_reader :url, :username, :password, :method, :response, :request_params, :request_headers, :request_body
+  attr_reader :url, :username, :password, :method, :response, :request_params, :request_headers, :request_body, :assertions
   attr_accessor :api_response
 
   validates :url, :method, presence: true
@@ -14,6 +14,7 @@ class RequestService
     @request_params = options[:request_params]
     @request_body = options[:request_body]
     @request_headers = options[:request_headers]
+    @assertions = options[:assertions]
   end
 
   def process
@@ -34,7 +35,7 @@ class RequestService
   private
 
   def save_api_response
-    ApiResponse.create!(url: url,
+    ApiResponse.create!({ url: url,
                         method: method.upcase,
                         response: response_body,
                         response_headers: response.headers,
@@ -43,7 +44,7 @@ class RequestService
                         request_params: request_params.is_a?(String) ? JSON.parse(request_params) : request_params,
                         username: username,
                         password: password,
-                        request_body: request_body
+                        request_body: request_body }.merge(assertion_attributes)
                        )
   end
 
@@ -63,5 +64,13 @@ class RequestService
 
   def options
     {url: url, method: method, :verify_ssl => false, headers: request_headers}.merge(authorization_options).merge(payload: request_params)
+  end
+
+  def assertion_attributes
+    if assertions.present?
+      { assertions_attributes: assertions }
+    else
+      {}
+    end
   end
 end

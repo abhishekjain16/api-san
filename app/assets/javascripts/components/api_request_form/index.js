@@ -59,7 +59,7 @@ class ApiRequestForm extends React.Component {
 
   addAssertion(event) {
     event.preventDefault();
-    const assertions = this.state.assertions.concat({ id: uuid.v1(), kind: 'ResponseJSON', key: '', comparision: 'equals', value: '' });
+    const assertions = this.state.assertions.concat({ id: uuid.v1(), kind: 'ResponseJSON', key: '', comparison: 'equals', value: '' });
     this.setState({ assertions });
   }
 
@@ -150,7 +150,6 @@ class ApiRequestForm extends React.Component {
       username: this.state.username,
       password: this.state.password,
       request_headers: this.requestHeaders(),
-      //TODO: add post request to accept and save assertions in request object
       assertions: this.requestAssertions(),
     };
   }
@@ -165,7 +164,7 @@ class ApiRequestForm extends React.Component {
   requestAssertions() {
     const assertions = this.state.assertions.map((element) => {
       console.log(element);
-      return _.pick(element, 'kind', 'key', 'comparision', 'value');
+      return _.pick(element, 'kind', 'key', 'comparison', 'value');
     });
     return assertions;
   }
@@ -306,7 +305,7 @@ const RequestAssertionInput = ({ removeAssertion, handleAssertionChange, asserti
     <div className="api-req-form__form-inline form-inline">
       <AssertionKindInput inputKeyName="request_assertions[][kind]" handleKindChange={handleAssertionChange} value={assertion.kind } />
       <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={assertion.key} />
-      <AssertionComparisionInput inputKeyName="request_assertions[][comarision]" handleComparisionChange={handleAssertionChange} value={assertion.comparision} />
+      <AssertionComparisonInput inputKeyName="request_assertions[][comparison]" handleComparisonChange={handleAssertionChange} value={assertion.comparison} />
       <ValueInput inputValueName="request_assertions[][value]" handleValueChange={handleAssertionChange} value={assertion.value} />
       <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeAssertion}>
         <span />
@@ -333,14 +332,13 @@ const AssertionKindInput = ({ inputKindName, handleKindChange, value }) => {
   return (
     <select name={inputKindName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleKindChange} data-type="kind">
       <option>ResponseJSON</option>
-      <option>ResponseBody</option>
     </select>
     );
 }
 
-const AssertionComparisionInput = ({ inputComparisionName, handleComparisionChange, value }) => {
+const AssertionComparisonInput = ({ inputComparisonName, handleComparisonChange, value }) => {
   return (
-    <select name={inputComparisionName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleComparisionChange} data-type="comparision">
+    <select name={inputComparisonName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleComparisonChange} data-type="comparison">
       <option>equals</option>
       <option>contains</option>
       <option>greater than</option>
