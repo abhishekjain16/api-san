@@ -16,9 +16,9 @@ class ApiAssertion < ApplicationRecord
   def assert_values
     case comparison
     when 'equals'
-      api_value == value
+      api_value.to_s == value.to_s
     when 'contains'
-      api_value.include?(value)
+      api_value.to_s.include?(value.to_s)
     when 'lesser than'
       api_value.to_i < value.to_i
     when 'greater than'
