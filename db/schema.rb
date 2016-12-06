@@ -30,17 +30,17 @@ ActiveRecord::Schema.define(version: 20161206082237) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
   end
 
-  create_table "api_assertions", id: :integer, default: -> { "nextval('assertions_id_seq'::regclass)" }, force: :cascade do |t|
+  create_table "api_assertions", force: :cascade do |t|
     t.string   "key"
     t.string   "value"
     t.string   "comparison"
     t.string   "kind"
     t.string   "api_value"
-    t.boolean  "success"
-    t.integer  "api_responses_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
-    t.index ["api_responses_id"], name: "index_assertions_on_api_responses_id", using: :btree
+    t.boolean  "success",         default: false
+    t.integer  "api_response_id"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+    t.index ["api_response_id"], name: "index_api_assertions_on_api_response_id", using: :btree
   end
 
   create_table "api_responses", force: :cascade do |t|
