@@ -4,7 +4,6 @@ import update from 'react-addons-update';
 import _ from 'underscore';
 import { hashHistory } from 'react-router';
 import Loader from 'react-loader';
-import ReactDOM from 'react-dom';
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
