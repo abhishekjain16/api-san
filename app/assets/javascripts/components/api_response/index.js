@@ -87,6 +87,27 @@ class ApiResponse extends React.Component {
     this.setState({ activeTab });
   }
 
+  assertionFailureText(assertion) {
+    let errorText = ""
+    switch(assertion.comparison) {
+      case 'equals':
+        errorText  = ' was not equal to ';
+        break;
+      case 'contains':
+        errorText  = ' did not contain ';
+        break;
+      case 'lesser than':
+        errorText  = ' was not less than ';
+        break;
+      case 'greater than':
+        errorText  = ' was not greater than ';
+        break;
+      default:
+        errorText  = ' was not equal to ';
+    }
+    return errorText;
+  }
+
   render() {
     if (this.state.notFound) {
       return <NotFound />;
@@ -98,13 +119,14 @@ class ApiResponse extends React.Component {
           response={this.state.response}
           requestData={this.state.requestData}
           changeActiveTab={activeTab => this.changeActiveTab(activeTab)}
+          assertionFailureText={assertion => this.assertionFailureText(assertion)}
           activeTab={this.state.activeTab} />
       );
     }
   }
 }
 
-const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) => {
+const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab, assertionFailureText }) => {
   return (
     <div>
       <ApiRequestForm {...requestData} />
@@ -112,7 +134,7 @@ const ApiResponseView = ({ response, requestData, activeTab, changeActiveTab }) 
         <h3>Response</h3>
         <HTTPStatus value={response.response_code} />
         <p><span className="api-res-form__label">Date:</span> {moment().format('llll')}</p>
-        <AssertionView assertions={requestData.assertions} />
+        <AssertionView assertions={requestData.assertions} assertionFailureText={assertionFailureText} />
         <ul className="nav nav-tabs api-res__req-tabs">
           <li className={activeTab === 'body' ? 'active' : ''}>
             <Link onClick={() => { changeActiveTab('body'); }}>Body</Link>
@@ -184,7 +206,7 @@ const ListItemPair = ({ listKey, listValue }) => {
   );
 };
 
-const AssertionView = ({ assertions }) => {
+const AssertionView = ({ assertions, assertionFailureText }) => {
   if (!assertions || !assertions.length) {
     return <div/>
   };
@@ -195,13 +217,37 @@ const AssertionView = ({ assertions }) => {
         {
           assertions.map((assertion, index) => {
             return (
-              <li key={index} className={'api-res-form__assertion--'+(assertion.success ? 'success' : 'fail')}><i className={assertion.success ? 'fa fa-check' : 'fa fa-times'}/><span>{assertion.kind + ' ' + assertion.key + ' ' + assertion.comparison + ' ' + assertion.value}</span></li>
-              );
+              <li key={index} className={'api-res-form__assertion--'+(assertion.success ? 'success' : 'fail')}>
+                <i className={assertion.success ? 'fa fa-check' : 'fa fa-times'}/>
+                <AssertionText assertion={assertion} success={assertion.success} assertionFailureText={assertionFailureText} />
+              </li>
+            );
           })
         }
       </ul>
     </div>
     );
+}
+
+const AssertionText = ({ assertion, success, assertionFailureText }) => {
+  if (success) {
+    return(
+      <span>
+        {assertion.key + ' ' + assertion.comparison + ' '}
+        <strong>{assertion.value}</strong>
+      </span>
+    );
+  } else {
+    return(
+      <span>
+        {assertion.key + ' '}
+        {assertionFailureText(assertion)}
+        <strong>{assertion.value}.</strong>
+        {" The value received was "}
+        <strong>{assertion.api_value}.</strong>
+      </span>
+    );
+  }
 }
 
 export default ApiResponse;
