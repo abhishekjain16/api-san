@@ -241,9 +241,10 @@ const AssertionText = ({ assertion, success, assertionFailureText }) => {
     return(
       <span>
         {assertion.key + ' '}
-        <strong>{assertion.api_value}</strong>
         {assertionFailureText(assertion)}
-        <strong>{assertion.value}</strong>
+        <strong>{assertion.value}.</strong>
+        {" The value received was "}
+        <strong>{assertion.api_value}.</strong>
       </span>
     );
   }
