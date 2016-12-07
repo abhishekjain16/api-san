@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, hashHistory } from 'react-router';
-import routes from '../config/routes';
+import routes from './routes';
 
 class ApiSanity {
   static loadReactComponents() {

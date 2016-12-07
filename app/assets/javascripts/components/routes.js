@@ -1,8 +1,8 @@
 import React from 'react';
-import ApiRequestForm from '../components/api_request_form/index';
-import EditApiRequest from '../components/api_request_form/edit';
-import ApiResponse from '../components/api_response/index';
-import App from '../components/app'
+import ApiRequestForm from './api_request_form/index';
+import EditApiRequest from './api_request_form/edit';
+import ApiResponse from './api_response/index';
+import App from './app'
 import { Route, IndexRoute } from 'react-router';
 
 export default (

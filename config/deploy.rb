@@ -47,6 +47,8 @@ set :git_tag_name, proc { Time.now.to_s.gsub(/[-\s\:\+]+/, '-') }
 
 set :bundle_jobs, 4
 
+set :npm_flags, '--silent --no-progress'
+
 before 'deploy:migrate', 'db:backup'
 after 'deploy:finishing', 'deploy:cleanup'
 after 'deploy:cleanup', 'unicorn:restart'
