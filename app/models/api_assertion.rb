@@ -46,6 +46,6 @@ class ApiAssertion < ApplicationRecord
     keys = key.scan(/(\d+)|(\w+)/).map do |number, string|
       number&.to_i || string
     end
-    response.dig(*keys)
+    keys.empty? ? 'Null' : response.dig(*keys)
   end
 end
