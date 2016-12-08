@@ -50,7 +50,7 @@ set :bundle_jobs, 4
 set :npm_flags, '--silent --no-progress'
 
 before 'deploy:compile_assets', 'assets:clear_tmp'
-before 'deploy:migrate', 'db:backup'
+# before 'deploy:migrate', 'db:backup'
 after 'deploy:finishing', 'deploy:cleanup'
 after 'deploy:cleanup', 'unicorn:restart'
 after 'deploy:cleanup', 'delayed_job:restart'
