@@ -58,7 +58,7 @@ class ApiRequestForm extends React.Component {
 
   addAssertion(event) {
     event.preventDefault();
-    const assertions = this.state.assertions.concat({ id: uuid.v1(), kind: 'ResponseJSON', key: '', comparison: 'equals', value: '' });
+    const assertions = this.state.assertions.concat({ id: uuid.v1(), kind: 'Response JSON', key: '', comparison: 'equals', value: '' });
     this.setState({ assertions });
   }
 
@@ -162,7 +162,6 @@ class ApiRequestForm extends React.Component {
 
   requestAssertions() {
     const assertions = this.state.assertions.map((element) => {
-      console.log(element);
       return _.pick(element, 'kind', 'key', 'comparison', 'value');
     });
     return assertions;
@@ -300,10 +299,11 @@ const RequestHeaderInput = ({ removeHeader, handleHeaderChange, header }) => {
 };
 
 const RequestAssertionInput = ({ removeAssertion, handleAssertionChange, assertion }) => {
+  const shouldNotAllowAssertionValue = (assertion.kind === 'Status Code');
   return (
     <div className="api-req-form__form-inline form-inline">
       <AssertionKindInput inputKeyName="request_assertions[][kind]" handleKindChange={handleAssertionChange} value={assertion.kind} />
-      <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={assertion.key} />
+      <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={shouldNotAllowAssertionValue ? '' : assertion.key} disabled={shouldNotAllowAssertionValue} />
       <AssertionComparisonInput inputKeyName="request_assertions[][comparison]" handleComparisonChange={handleAssertionChange} value={assertion.comparison} />
       <ValueInput inputValueName="request_assertions[][value]" handleValueChange={handleAssertionChange} value={assertion.value} />
       <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeAssertion}>
@@ -321,16 +321,17 @@ const Error = ({ messages }) => {
   }
 };
 
-const KeyInput = ({ inputKeyName, handleKeyChange, value }) => {
+const KeyInput = ({ inputKeyName, handleKeyChange, value, disabled }) => {
   return (
-    <input type="text" value={value} name={inputKeyName} className="input form-control api-req-form__input" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" />
+    <input type="text" value={value} name={inputKeyName} className="input form-control api-req-form__input" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" disabled={disabled} />
   );
 };
 
 const AssertionKindInput = ({ inputKindName, handleKindChange, value }) => {
   return (
     <select name={inputKindName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleKindChange} data-type="kind">
-      <option>ResponseJSON</option>
+      <option>Response JSON</option>
+      <option>Status Code</option>
     </select>
   );
 };

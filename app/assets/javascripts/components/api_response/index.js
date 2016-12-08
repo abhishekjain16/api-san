@@ -233,6 +233,7 @@ const AssertionText = ({ assertion, success, assertionFailureText }) => {
   if (success) {
     return(
       <span>
+        {assertion.kind + ' '}
         {assertion.key + ' ' + assertion.comparison + ' '}
         <strong>{assertion.value}</strong>
       </span>
@@ -240,6 +241,7 @@ const AssertionText = ({ assertion, success, assertionFailureText }) => {
   } else {
     return(
       <span>
+        {assertion.kind + ' '}
         {assertion.key + ' '}
         {assertionFailureText(assertion)}
         <strong>{assertion.value}.</strong>

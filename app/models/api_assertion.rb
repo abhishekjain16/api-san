@@ -6,11 +6,25 @@ class ApiAssertion < ApplicationRecord
   private
 
   def set_results
-    response = JSON.parse(api_response.response_body)
-    self.api_value = fetch_api_value(response)
+    case kind
+    when 'Response JSON'
+      assert_from_response
+    when 'Status Code'
+      assert_from_status
+    end
     self.success = api_value ? assert_values : false
   rescue JSON::ParserError => e
     self.success = false
+  end
+
+  def assert_from_response
+    response = JSON.parse(api_response.response_body)
+    self.api_value = fetch_api_value(response)
+  end
+
+  def assert_from_status
+    self.key = ''
+    self.api_value = api_response.status_code
   end
 
   def assert_values
