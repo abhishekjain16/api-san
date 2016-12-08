@@ -119,8 +119,8 @@ group :test do
 
 end
 
-gem 'boxy-cap', github: 'bigbinary/boxy-cap'
 group :deploy do
+  gem 'boxy-cap', github: 'bigbinary/boxy-cap'
   gem 'capistrano'
   gem 'capistrano-rbenv'
   gem 'capistrano-rails', github: 'capistrano/rails'
