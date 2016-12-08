@@ -49,7 +49,7 @@ set :bundle_jobs, 4
 
 set :npm_flags, '--silent --no-progress'
 
-before 'deploy:compile_assets', 'task:exec[tmp:cache:clear]'
+before 'deploy:compile_assets', 'assets:clear_tmp'
 before 'deploy:migrate', 'db:backup'
 after 'deploy:finishing', 'deploy:cleanup'
 after 'deploy:cleanup', 'unicorn:restart'
