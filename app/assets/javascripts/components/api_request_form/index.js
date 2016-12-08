@@ -303,7 +303,7 @@ const RequestAssertionInput = ({ removeAssertion, handleAssertionChange, asserti
   return (
     <div className="api-req-form__form-inline form-inline">
       <AssertionKindInput inputKeyName="request_assertions[][kind]" handleKindChange={handleAssertionChange} value={assertion.kind} />
-      <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={shouldNotAllowAssertionValue ? '' : assertion.key} disabled={shouldNotAllowAssertionValue} />
+      <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={shouldNotAllowAssertionValue ? '--' : assertion.key} disabled={shouldNotAllowAssertionValue} />
       <AssertionComparisonInput inputKeyName="request_assertions[][comparison]" handleComparisonChange={handleAssertionChange} value={assertion.comparison} />
       <ValueInput inputValueName="request_assertions[][value]" handleValueChange={handleAssertionChange} value={assertion.value} />
       <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeAssertion}>
