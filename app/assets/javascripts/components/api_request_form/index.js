@@ -6,7 +6,7 @@ import { hashHistory } from 'react-router';
 import Loader from 'react-loader';
 import { SelectForMethods } from './inputs';
 import { AddAssertionLink, Assertions } from './assertions';
-import { AddAuthLink, Authentication } from './auth';
+import { Authentication } from './auth';
 import { AddParamLink, Params } from './params';
 import { AddHeaderLink, Headers } from './headers';
 import { AddRequestBody, RequestBody } from './requestBody';
