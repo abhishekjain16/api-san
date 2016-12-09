@@ -4,6 +4,12 @@ import update from 'react-addons-update';
 import _ from 'underscore';
 import { hashHistory } from 'react-router';
 import Loader from 'react-loader';
+import { SelectForMethods } from './inputs';
+import { AddAssertionLink, Assertions } from './assertions';
+import { AddAuthLink, Authentication } from './auth';
+import { AddParamLink, Params } from './params';
+import { AddHeaderLink, Headers } from './headers';
+import { AddRequestBody, RequestBody } from './requestBody';
 
 class ApiRequestForm extends React.Component {
   constructor(props) {
@@ -14,7 +20,7 @@ class ApiRequestForm extends React.Component {
       username: this.props.username || '',
       password: this.props.password || '',
       request_body: this.props.request_body || '',
-      params: this.props.request_params || [],
+      request_params: this.props.request_params || [],
       headers: this.props.request_headers || [],
       assertions: this.props.assertions || [],
       showRequestBody: false,
@@ -25,7 +31,6 @@ class ApiRequestForm extends React.Component {
   }
 
   componentDidMount() {
-    window.x = this.urlInput;
     this.urlInput.focus();
   }
 
@@ -38,16 +43,14 @@ class ApiRequestForm extends React.Component {
 
   addParam(event) {
     event.preventDefault();
-    const params = this.state.params.concat({ id: uuid.v1(), key: '', value: '' });
     const showRequestBody = false;
-    this.setState({ params, showRequestBody });
+    this.setState({ request_params: this.state.request_params.concat({ id: uuid.v1(), key: '', value: '' }), showRequestBody });
   }
 
   addBody(event) {
     event.preventDefault();
-    const params = [];
     const showRequestBody = true;
-    this.setState({ params, showRequestBody });
+    this.setState({ request_params: [], showRequestBody });
   }
 
   addHeader(event) {
@@ -62,10 +65,14 @@ class ApiRequestForm extends React.Component {
     this.setState({ assertions });
   }
 
+  removeRequestBody(event) {
+    event.preventDefault();
+    this.setState({ request_body: null, showRequestBody: false });
+  }
+
   removeParam(event, paramId) {
     event.preventDefault();
-    const params = this.state.params.filter(element => element.id !== paramId);
-    this.setState({ params });
+    this.setState({ request_params: this.state.request_params.filter(element => element.id !== paramId) });
   }
 
   removeHeader(event, headerId) {
@@ -80,8 +87,12 @@ class ApiRequestForm extends React.Component {
     this.setState({ assertions });
   }
 
-  handleCheckboxChange(event) {
-    this.setState({ showAuthentication: event.target.checked });
+  toggleAuth(event, showAuthentication = true) {
+    event.preventDefault();
+    if (!showAuthentication) {
+      this.setState({ username: null, password: null });
+    }
+    this.setState({ showAuthentication: showAuthentication });
   }
 
   handleChange(event) {
@@ -91,10 +102,9 @@ class ApiRequestForm extends React.Component {
   }
 
   handleParamChange(event, id) {
-    const param = _.find(this.state.params, element => element.id === id);
-    param[event.target.dataset.type] = event.target.value;
-
-    this.updateAndSet(this.state.params, param, 'params');
+    const requestParams = _.find(this.state.request_params, element => element.id === id);
+    requestParams[event.target.dataset.type] = event.target.value;
+    this.updateAndSet(this.state.request_params, requestParams, 'request_params');
   }
 
   handleHeaderChange(event, id) {
@@ -171,7 +181,7 @@ class ApiRequestForm extends React.Component {
     if (this.state.showRequestBody) {
       return { request_body: this.state.request_body };
     } else {
-      const parameters = this.state.params.map((element) => {
+      const parameters = this.state.request_params.map((element) => {
         return _.pick(element, 'key', 'value');
       });
       return { request_parameters: parameters };
@@ -179,21 +189,6 @@ class ApiRequestForm extends React.Component {
   }
 
   render() {
-    const params = this.state.params.map((param) => {
-      const removeParam = event => this.removeParam(event, param.id);
-      const handleParamChange = event => this.handleParamChange(event, param.id);
-      return <RequestParameterInput key={param.id} removeParam={removeParam} handleParamChange={handleParamChange} param={param} />;
-    });
-    const headers = this.state.headers.map((header) => {
-      const removeHeader = event => this.removeHeader(event, header.id);
-      const handleHeaderChange = event => this.handleHeaderChange(event, header.id);
-      return <RequestHeaderInput key={header.id} removeHeader={removeHeader} handleHeaderChange={handleHeaderChange} header={header} />;
-    });
-    const assertions = this.state.assertions.map((assertion) => {
-      const removeAssertion = event => this.removeAssertion(event, assertion.id);
-      const handleAssertionChange = event => this.handleAssertionChange(event, assertion.id);
-      return <RequestAssertionInput key={assertion.id} removeAssertion={removeAssertion} handleAssertionChange={handleAssertionChange} assertion={assertion} />;
-    });
     return (
       <div className="container-fluid api-req-form__container">
         <div className="row form-controls text-center">
@@ -207,40 +202,32 @@ class ApiRequestForm extends React.Component {
                   <input ref={(c) => { this.urlInput = c; }} value={this.state.url} type="text" className="input form-control required" name="url" placeholder="Enter destination URL" onChange={event => this.handleChange(event)} />
                   <Error messages={this.state.errors.url} />
                 </div>
+                <div className="api-req-form__btn-group btn-group">
+                  <button className="btn btn-default" onClick={event => this.toggleAuth(event, true)} >
+                    Add Auth
+                  </button>
+                  <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span className="caret" />
+                    <span className="sr-only">Toggle Dropdown</span>
+                  </button>
+                  <ul className="dropdown-menu">
+                    <li><AddAuthLink addAuth={event => this.toggleAuth(event, true)} /></li>
+                    <li><AddHeaderLink addHeader={this.addHeader.bind(this)} /></li>
+                    <li><AddParamLink addParam={this.addParam.bind(this)} /></li>
+                    <li><AddRequestBody addBody={this.addBody.bind(this)} /></li>
+                    <li><AddAssertionLink addAssertion={this.addAssertion.bind(this)} /></li>
+                  </ul>
+                </div>
+                <button type="submit" className="btn btn-primary" disabled={!this.state.loaded}>
+                  <i className="fa fa-paper-plane-o api-req-form__send-icon" />
+                  SEND
+                </button>
             </div>
-            <div className="form-inline api-req-form__auth-form">
-              <div className="form-group checkbox">
-                <label htmlFor="authentication"><input type="checkbox" className="api-req-form__auth-check" checked={this.state.showAuthentication} onChange={event => this.handleCheckboxChange(event)} />Basic Authentication</label>
-              </div>
-              <Authentication username={this.state.username} password={this.state.password} showAuthentication={this.state.showAuthentication} handleChange={event => this.handleChange(event)} />
-            </div>
-
-            <div className="form-group">
-              <AddHeaderLink addHeader={event => this.addHeader(event)} />
-              {headers}
-            </div>
-
-            <div className="form-group">
-              <div className="api-req-form__param-links">
-                <AddParamLink addParam={event => this.addParam(event)} />
-                OR
-                <AddRequestBody addBody={event => this.addBody(event)} />
-              </div>
-              <div>
-                {params}
-                <RequestBody showRequestBody={this.state.showRequestBody} handleChange={event => this.handleChange(event)} value={this.state.request_body || ''} />
-              </div>
-            </div>
-
-            <div className="form-group">
-              <AddAssertionLink addAssertion={event => this.addAssertion(event)} />
-              {assertions}
-            </div>
-
-            <button type="submit" className="btn btn-primary" disabled={!this.state.loaded}>
-              <i className="fa fa-paper-plane-o api-req-form__send-icon" />
-              SEND
-            </button>
+            <Authentication showAuthentication={this.state.showAuthentication} handleChange={this.handleChange.bind(this)} username={this.state.username} password={this.state.password} removeAuth={event => this.toggleAuth(event, false)} />
+            <Headers headers={this.state.headers} addHeader={this.addHeader.bind(this)} handleHeaderChange={this.handleHeaderChange.bind(this)} removeHeader={this.removeHeader.bind(this)} />
+            <Params params={this.state.request_params} addParam={this.addParam.bind(this)} handleParamChange={this.handleParamChange.bind(this)} removeParam={this.removeParam.bind(this)} />
+            <Assertions assertions={this.state.assertions} addAssertion={this.addAssertion.bind(this)} handleAssertionChange={this.handleAssertionChange.bind(this)} removeAssertion={this.removeAssertion.bind(this)} />
+            <RequestBody showRequestBody={this.state.showRequestBody} handleChange={this.handleChange.bind(this)} value={this.state.request_body || ''} removeRequestBody={this.removeRequestBody.bind(this)} />
           </form>
           <Error messages={this.state.errors.base} />
         </div>
@@ -250,135 +237,11 @@ class ApiRequestForm extends React.Component {
   }
 }
 
-const AddParamLink = ({ addParam }) => {
-  return <a href="" onClick={event => addParam(event)} className="devise-links"> Add Parameter </a>;
-};
-
-const AddHeaderLink = ({ addHeader }) => {
-  return <a href="" onClick={event => addHeader(event)} className="devise-links"> Add Header </a>;
-};
-
-const AddAssertionLink = ({ addAssertion }) => {
-  return <a href="" onClick={event => addAssertion(event)} className="devise-links"> Add Assertion </a>;
-};
-
-const AddRequestBody = ({ addBody }) => {
-  return <a href="" onClick={event => addBody(event)} className="devise-links"> Add Body</a>;
-};
-
-const RequestBody = ({ showRequestBody, handleChange, value }) => {
-  return (
-    showRequestBody ?
-      <textarea name="request_body" placeholder="Enter Request Body" rows="8" cols="8" className="form-control api-req-form__textarea" onChange={handleChange} value={value} /> :
-      <div />
-  );
-};
-
-const RequestParameterInput = ({ removeParam, handleParamChange, param }) => {
-  return (
-    <div className="api-req-form__form-inline form-inline">
-      <KeyInput inputKeyName="request_parameters[][key]" handleKeyChange={handleParamChange} value={param.key} />
-      <ValueInput inputValueName="request_parameters[][value]" handleValueChange={handleParamChange} value={param.value} />
-      <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeParam}>
-        <span />
-      </a>
-    </div>
-  );
-};
-
-const RequestHeaderInput = ({ removeHeader, handleHeaderChange, header }) => {
-  return (
-    <div className="api-req-form__form-inline form-inline">
-      <KeyInput inputKeyName="request_headers[][key]" handleKeyChange={handleHeaderChange} value={header.key} />
-      <ValueInput inputValueName="request_headers[][value]" handleValueChange={handleHeaderChange} value={header.value} />
-      <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeHeader}>
-        <span />
-      </a>
-    </div>
-  );
-};
-
-const RequestAssertionInput = ({ removeAssertion, handleAssertionChange, assertion }) => {
-  const shouldNotAllowAssertionValue = (assertion.kind === 'Status Code');
-  return (
-    <div className="api-req-form__form-inline form-inline">
-      <AssertionKindInput inputKeyName="request_assertions[][kind]" handleKindChange={handleAssertionChange} value={assertion.kind} />
-      <KeyInput inputKeyName="request_assertions[][key]" handleKeyChange={handleAssertionChange} value={shouldNotAllowAssertionValue ? '--' : assertion.key} disabled={shouldNotAllowAssertionValue} />
-      <AssertionComparisonInput inputKeyName="request_assertions[][comparison]" handleComparisonChange={handleAssertionChange} value={assertion.comparison} />
-      <ValueInput inputValueName="request_assertions[][value]" handleValueChange={handleAssertionChange} value={assertion.value} />
-      <a href="" className="fa fa-2x fa-times api-req-form__remove-icon" onClick={removeAssertion}>
-        <span />
-      </a>
-    </div>
-  );
-};
-
 const Error = ({ messages }) => {
   if (messages) {
     return <span className="text-danger pull-left">{messages.join()}</span>;
   } else {
     return <span />;
-  }
-};
-
-const KeyInput = ({ inputKeyName, handleKeyChange, value, disabled }) => {
-  return (
-    <input type="text" value={value} name={inputKeyName} className="input form-control api-req-form__input" placeholder="Enter Name" onChange={handleKeyChange} data-type="key" disabled={disabled} />
-  );
-};
-
-const AssertionKindInput = ({ inputKindName, handleKindChange, value }) => {
-  return (
-    <select name={inputKindName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleKindChange} data-type="kind">
-      <option>Response JSON</option>
-      <option>Status Code</option>
-    </select>
-  );
-};
-
-const AssertionComparisonInput = ({ inputComparisonName, handleComparisonChange, value }) => {
-  return (
-    <select name={inputComparisonName} className="api-req-form__assertion-select form-control required" value={value} onChange={handleComparisonChange} data-type="comparison">
-      <option>equals</option>
-      <option>contains</option>
-      <option>greater than</option>
-      <option>lesser than</option>
-    </select>
-  );
-};
-
-const ValueInput = ({ inputValueName, handleValueChange, value }) => {
-  return (
-    <input type="text" value={value} name={inputValueName} className="input form-control api-req-form__input" placeholder="Enter Value" onChange={handleValueChange} data-type="value" />
-  );
-};
-
-const SelectForMethods = ({ handleChange, defaultMethod }) => {
-  return (
-    <select className="form-control required" name="method" defaultValue={defaultMethod.toLowerCase()} onChange={handleChange}>
-      <option value="get">GET</option>
-      <option value="post">POST</option>
-      <option value="put">PUT</option>
-      <option value="patch">PATCH</option>
-      <option value="delete">Delete</option>
-    </select>
-  );
-};
-
-const Authentication = ({ showAuthentication, handleChange, username, password }) => {
-  if (showAuthentication) {
-    return (
-      <div className="form-group">
-        <div className="form-group">
-          <input type="text" value={username} className="input form-control" name="username" placeholder="Enter username" onChange={handleChange} />
-        </div>
-        <div className="form-group">
-          <input type="text" value={password} className="input form-control" name="password" placeholder="Enter password" onChange={handleChange} />
-        </div>
-      </div>
-    );
-  } else {
-    return <div />;
   }
 };
 
