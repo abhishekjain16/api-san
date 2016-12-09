@@ -211,7 +211,6 @@ class ApiRequestForm extends React.Component {
                     <span className="sr-only">Toggle Dropdown</span>
                   </button>
                   <ul className="dropdown-menu">
-                    <li><AddAuthLink addAuth={event => this.toggleAuth(event, true)} /></li>
                     <li><AddHeaderLink addHeader={this.addHeader.bind(this)} /></li>
                     <li><AddParamLink addParam={this.addParam.bind(this)} /></li>
                     <li><AddRequestBody addBody={this.addBody.bind(this)} /></li>
