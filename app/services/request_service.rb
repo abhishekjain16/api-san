@@ -24,6 +24,7 @@ class RequestService
         self.api_response = save_api_response
       rescue RestClient::ExceptionWithResponse => e
         @response = e.response
+        self.api_response = save_api_response
       rescue URI::InvalidURIError
         errors.add(:url, 'Invalid URL')
       rescue SocketError => e
