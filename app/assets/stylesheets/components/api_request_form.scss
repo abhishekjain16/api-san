@@ -36,22 +36,24 @@
 
 .api-req-form__url-group {
   display: flex;
+  align-items: flex-start;
 }
 
 .api-req-form__url-control {
   flex: 1;
   padding-left: 20px;
+  padding-right: 20px;
 }
 
 .api-req-form__remove-icon {
   font-size: 16px;
+  color: gray;
 }
 
 .api-req-form__input {
   width: 250px;
   margin-right: 20px;
   margin-bottom: 5px;
-  margin-top: 5px;
 }
 
 .api-res-form__label {
@@ -73,7 +75,7 @@
 }
 
 .api-req-form__form-inline {
-  margin-top: 5px;
+  margin-top: 10px;
 }
 
 .api-res__res {
@@ -81,3 +83,23 @@
   border-color: #eee;
   font-size: 14px;
 }
+
+.api-req-form__btn-group {
+  margin-right: 20px;
+}
+
+.form-group__label {
+  font-size: 0.8rem;
+  margin-top: 20px;
+  margin-bottom: 0;
+  color: #aaa;
+  text-transform: uppercase;
+
+  .devise-links {
+    text-transform: capitalize;
+    font-size: 0.9rem;
+    margin-left: 10px;
+  }
+}
+
+.form-group { margin-bottom: 0; }
