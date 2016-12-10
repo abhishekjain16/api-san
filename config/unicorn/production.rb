@@ -8,7 +8,9 @@
 # See http://unicorn.bogomips.org/Unicorn/Configurator.html for complete
 # documentation.
 
-# Tweak it as per the need of the application
+# Use at least one worker per core if you're on a dedicated server,
+# more will usually help for _short_ waits on databases/caches.
+#FIXME: Set worker processes as needed
 worker_processes 1
 
 # Since Unicorn is never exposed to outside clients, it does not need to
@@ -27,31 +29,23 @@ working_directory "/data/apps/apisanity/current" # available in 0.94.0+
 listen "/data/apps/apisanity/shared/tmp/sockets/unicorn.sock", :backlog => 64
 # listen 8080, :tcp_nopush => true
 
-# After the timeout is exhausted, the unicorn worker will be killed and a new
-# one brought up in its place. Adjust this to your application's needs. The
-# default timeout is 60 seconds.
-#
-# When a user is on a slow internet and is attempting to upload a large file then
-# it will take sometime for the file to be uploaded. Hence setting it to 120 seconds.
-# Ideally files should directly be uploaded to S3 or some other similar service.
-timeout 40
+# nuke workers after 30 seconds instead of 60 seconds (the default)
+timeout 30
 
-
+# feel free to point this anywhere accessible on the filesystem
 pid "/data/apps/apisanity/shared/tmp/pids/unicorn.pid"
 
 # By default, the Unicorn logger will write to stderr.
-# Additionally, other applications/frameworks log to stderr or stdout,
+# Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
 stderr_path "/data/apps/apisanity/shared/log/unicorn.stderr.log"
 stdout_path "/data/apps/apisanity/shared/log/unicorn.stdout.log"
 
+# combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
-# http://stackoverflow.com/questions/18124417/how-do-i-tell-if-ruby-2-0-is-copy-on-write-friendly
 preload_app true
-
-if GC.respond_to?(:copy_on_write_friendly=)
-  GC.copy_on_write_friendly = true
-end
+GC.respond_to?(:copy_on_write_friendly=) and
+        GC.copy_on_write_friendly = true
 
 # Enable this flag to have unicorn test client connections by writing the
 # beginning of the HTTP headers before calling the application.  This
@@ -64,45 +58,24 @@ check_client_connection false
 before_fork do |server, worker|
     # the following is highly recomended for Rails + "preload_app true"
     # as there's no need for the master process to hold a connection
-
     defined?(ActiveRecord::Base) and
             ActiveRecord::Base.connection.disconnect!
 
-    # When sent a USR2, Unicorn will suffix its pidfile with .oldbin and
-    # immediately start loading up a new version of itself (loaded with a new
-    # version of app). When this new Unicorn is completely loaded
-    # it will begin spawning workers. The first worker spawned will check to
-    # see if an .oldbin pidfile exists. If so, this means we've just booted up
-    # a new Unicorn and need to tell the old one that it can now die. To do so
-    # we send the old version a QUIT or TTOU. QUIT is a signal to gracefully quit.
-    # TTOU is a signal to decrement the number of workers.
+    # The following is only recommended for memory/DB-constrained
+    # installations.  It is not needed if your system can house
+    # twice as many worker_processes as you have configured.
     #
-    # Let's say that number of workers set is 5. So the old master has 5 workers
-    # running. And then we deploy the code. Now the first worker of the new
-    # master comes along. If we QUIT old master then all the 5 old workers will
-    # also quit at the same time. So we check if the worker number ( which is 1 )
-    # in this case is leass than 5 ( 1 >= 5 ). This is false so we send TTOU to the
-    # old master to decrement its worker by 1. This will go on for 4 times and then
-    # now we have 4 new workers and 1 old worker. Now condition ( 5 >= 5) is true
-    # and now old master will be asked to QUIT. And that's the end of the process
-    # of rebooting.
-    #
+    # # This allows a new master process to incrementally
+    # # phase out the old master process with SIGTTOU to avoid a
+    # # thundering herd (especially in the "preload_app false" case)
+    # # when doing a transparent upgrade.  The last worker spawned
+    # # will then kill off the old master process with a SIGQUIT.
     old_pid = "#{server.config[:pid]}.oldbin"
     if old_pid != server.pid
       begin
         sig = (worker.nr + 1) >= server.worker_processes ? :QUIT : :TTOU
-
-        # Do not get fooled by kill. In *nix kill is a way to send signal. I know it's
-        # a terrible name but it has a long history. Here are some examples.
-        #
-        # kill -USR1 31950
-        # kill -QUIT 31950
-        # kill -KILL 31950
-        # kill -TTOU 31950
-        #
         Process.kill(sig, File.read(old_pid).to_i)
       rescue Errno::ENOENT, Errno::ESRCH
-        # looks like old process is already dead. Hurray!
       end
     end
     #
