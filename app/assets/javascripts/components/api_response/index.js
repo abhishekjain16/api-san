@@ -201,8 +201,9 @@ const ParsedResponse = ({ response }) => {
 
 const ListItemPair = ({ listKey, listValue }) => {
   return (
-    <li className="list-group-item list-headers">
-      {listKey}: {listValue}
+    <li className="api-res__header-item">
+      <span className="api-res__header-item-key">{listKey}: </span>
+      <span className="api-res__header-item-value">{listValue}</span>
     </li>
   );
 };
