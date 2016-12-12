@@ -194,7 +194,8 @@ const ParsedResponse = ({ response }) => {
   if (contentType && contentType.match(/json/g)) {
     return <ParsedJSONResponse body={response.response_body} />;
   } else {
-    return <div>Response not in JSON</div>;
+    const body = `${response.response_body}`;
+    return <div>{body}</div>;
   }
 };
 
