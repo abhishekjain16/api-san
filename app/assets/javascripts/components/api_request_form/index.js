@@ -6,7 +6,7 @@ import { hashHistory } from 'react-router';
 import Loader from 'react-loader';
 import { SelectForMethods } from './inputs';
 import { AddAssertionLink, Assertions } from './assertions';
-import { Authentication } from './auth';
+import { AddAuthLink, Authentication } from './auth';
 import { AddParamLink, Params } from './params';
 import { AddHeaderLink, Headers } from './headers';
 import { AddRequestBody, RequestBody } from './requestBody';
@@ -37,6 +37,7 @@ class ApiRequestForm extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== this.props) {
       this.setState(nextProps);
+      this.setState({ showAuthentication: (!!nextProps.username || !!nextProps.password) });
       return true;
     }
   }
@@ -90,9 +91,9 @@ class ApiRequestForm extends React.Component {
   toggleAuth(event, showAuthentication = true) {
     event.preventDefault();
     if (!showAuthentication) {
-      this.setState({ username: null, password: null });
+      this.setState({ username: '', password: '' });
     }
-    this.setState({ showAuthentication: showAuthentication });
+    this.setState({ showAuthentication });
   }
 
   handleChange(event) {
@@ -203,14 +204,13 @@ class ApiRequestForm extends React.Component {
                   <Error messages={this.state.errors.url} />
                 </div>
                 <div className="api-req-form__btn-group btn-group">
-                  <button className="btn btn-default" onClick={event => this.toggleAuth(event, true)} >
-                    Add Auth
-                  </button>
                   <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <span className="api-req-form__more-text">More</span>
                     <span className="caret" />
                     <span className="sr-only">Toggle Dropdown</span>
                   </button>
                   <ul className="dropdown-menu">
+                    <li><AddAuthLink addAuth={this.toggleAuth.bind(this)} /></li>
                     <li><AddHeaderLink addHeader={this.addHeader.bind(this)} /></li>
                     <li><AddParamLink addParam={this.addParam.bind(this)} /></li>
                     <li><AddRequestBody addBody={this.addBody.bind(this)} /></li>
