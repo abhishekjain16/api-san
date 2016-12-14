@@ -5,10 +5,12 @@
 .api-res__headers {
   display: inline-block;
   padding-left: 0;
+  list-style: none;
 }
 
 .api-res__req-tabs {
   margin-bottom: 10px;
+  li { cursor: pointer; }
 }
 
 .api-res-form__list {
@@ -30,3 +32,8 @@
 .api-res-form__assertion--success i { color: green; }
 .api-res-form__assertion--fail i { color: red; }
 .api-req-form__more-text { margin-right: 5px; }
+
+.api-res__header-item-key {
+  font-weight: bold;
+  margin-right: 4px;
+}
