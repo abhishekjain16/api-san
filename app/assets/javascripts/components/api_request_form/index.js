@@ -100,6 +100,7 @@ class ApiRequestForm extends React.Component {
     this.setState({
       [event.target.name]: event.target.value,
     });
+    this.urlInput.focus();
   }
 
   handleParamChange(event, id) {
@@ -147,6 +148,7 @@ class ApiRequestForm extends React.Component {
     }).fail(function (data) {
       const response = data.responseJSON;
       this.setState({errors: response.errors})
+      this.urlInput.focus();
     }).complete(function() {
       this.setState({loaded: true})
     });

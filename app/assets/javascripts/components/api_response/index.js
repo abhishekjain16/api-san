@@ -236,7 +236,8 @@ const AssertionText = ({ assertion, success, assertionFailureText }) => {
     return(
       <span>
         {assertion.kind + ' '}
-        {assertion.key + ' ' + assertion.comparison + ' '}
+        <strong>{assertion.key + ' '}</strong>
+        {assertion.comparison + ' '}
         <strong>{assertion.value}</strong>
       </span>
     );
@@ -244,7 +245,7 @@ const AssertionText = ({ assertion, success, assertionFailureText }) => {
     return(
       <span>
         {assertion.kind + ' '}
-        {assertion.key + ' '}
+        <strong>{assertion.key + ' '}</strong>
         {assertionFailureText(assertion)}
         <strong>{assertion.value}.</strong>
         {" The value received was "}
